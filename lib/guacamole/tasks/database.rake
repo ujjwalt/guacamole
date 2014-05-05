@@ -1,3 +1,5 @@
+# -*- encoding : utf-8 -*-
+
 namespace :db do
   namespace :guacamole do
     desc "Purges all the collections of the database for the current environment"

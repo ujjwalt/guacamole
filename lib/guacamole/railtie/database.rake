@@ -1,3 +1,5 @@
+# -*- encoding : utf-8 -*-
+
 load 'guacamole/tasks/database.rake'
 
 namespace :db do
