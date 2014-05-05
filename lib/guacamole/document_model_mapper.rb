@@ -49,7 +49,7 @@ module Guacamole
       # @param [symbol, string] model_name the name of the model
       # @return [class] the {collection} class for the given model name
       def collection_for(model_name)
-        "#{model_name.to_s.pluralize}Collection".camelcase.constantize
+        "#{model_name.to_s.classify.pluralize}Collection".constantize
       end
     end
 
