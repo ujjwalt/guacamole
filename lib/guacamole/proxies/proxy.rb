@@ -1,3 +1,5 @@
+# -*- encoding : utf-8 -*-
+
 module Guacamole
   module Proxies
     # This is the base class for the association proxies. Proxies are only
