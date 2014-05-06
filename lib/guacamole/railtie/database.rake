@@ -14,7 +14,6 @@ namespace :db do
   end
 
   unless Rake::Task.task_defined?("db:seed")
-    # if another ORM has defined db:seed, don"t run it twice.
     desc "Load the seed data from db/seeds.rb"
     task :seed => :environment do
       seed_file = File.join(Rails.root, "db", "seeds.rb")
@@ -40,14 +39,14 @@ namespace :db do
   unless Rake::Task.task_defined?("db:migrate")
     desc "Run the migrations for the current Rails.env (not yet implemented)"
     task :migrate => :environment do
-      # noop
+      raise "ArangoDB doesn't support migrations. If you need to migrate your data you must roll your own solution."
     end
   end
 
   unless Rake::Task.task_defined?("db:schema:load")
     namespace :schema do
       task :load do
-        # noop
+        raise "ArangoDB is schema-less, thus we cannot load any schema."
       end
     end
   end
