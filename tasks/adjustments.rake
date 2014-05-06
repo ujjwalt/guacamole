@@ -27,7 +27,6 @@ task ci: %w[
   spec
   metrics:coverage
   metrics:reek
-  metrics:rubocop
   metrics:yardstick:verify
 ]
 
