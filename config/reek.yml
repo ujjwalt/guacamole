@@ -29,7 +29,8 @@ FeatureEnvy:
   exclude: []
 IrresponsibleModule:
   enabled: true
-  exclude: []
+  exclude:
+  - - !ruby/regexp /Generators/
 LongParameterList:
   enabled: true
   exclude: []

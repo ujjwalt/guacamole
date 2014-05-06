@@ -1,0 +1,5 @@
+<% module_namespacing do -%>
+class <%= class_name %>Collection
+  include Guacamole::Collection
+end
+<% end -%>

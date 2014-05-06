@@ -1,0 +1,11 @@
+<% module_namespacing do -%>
+class <%= class_name %><%= " < #{options[:parent].classify}" if options[:parent] %>
+<% unless options[:parent] -%>
+  include Guacamole::Model
+<% end -%>
+
+<% attributes.reject{|attr| attr.reference?}.each do |attribute| -%>
+  attribute :<%= attribute.name %>, <%= attribute.type_class %>
+<% end -%>
+end
+<% end -%>

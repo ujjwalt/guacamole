@@ -15,6 +15,9 @@ module Guacamole
 
     config.guacamole = ::Guacamole::Configuration
 
+    # We're not doing migrations (yet)
+    config.send(:app_generators).orm :guacamole, migration: false
+
     initializer 'guacamole.load-config' do
       config_file = Rails.root.join('config', 'guacamole.yml')
       if config_file.file?
