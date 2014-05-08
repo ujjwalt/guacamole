@@ -4,7 +4,6 @@ module Guacamole
   # Build a query for ArangoDB
   class Query
     include Enumerable
-
     # Connection to the database
     #
     # @return [Ashikawa::Core::Collection]
@@ -26,6 +25,22 @@ module Guacamole
     # @api private
     attr_accessor :options
 
+    attr_accessor :aql
+
+    def bind_vars=(bind_vars)
+      @options[:bind_vars] = bind_vars
+    end
+
+    def bind_vars
+      @options[:bind_vars]
+    end
+
+    def query_type
+      return :example if example.present?
+      return :aql     if aql.present?
+      nil
+    end
+
     # Create a new Query
     #
     # @param [Ashikawa::Core::Collection] connection The collection to use to talk to the database
@@ -44,8 +59,11 @@ module Guacamole
 
       iterator = ->(document) { yield mapper.document_to_model(document) }
 
-      if example
+      case query_type
+      when :example
         connection.by_example(example, options).each(&iterator)
+      when :aql
+        connection.execute(aql, options).each(&iterator)
       else
         connection.all(options).each(&iterator)
       end
