@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Guacamole : An ODM for ArangoDB in Ruby" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Guacamole</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/triAGENS/guacamole">View on GitHub</a>
+
+          <h1 id="project_title">Guacamole</h1>
+          <h2 id="project_tagline">An ODM for ArangoDB in Ruby</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/triAGENS/guacamole/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/triAGENS/guacamole/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="guacamole" class="anchor" href="#guacamole"><span class="octicon octicon-link"></span></a>Guacamole</h1>
+
+<table>
+<thead><tr>
+<th align="left">Project</th>
+<th align="left">Guacamole</th>
+</tr></thead>
+<tbody>
+<tr>
+<td align="left">Homepage</td>
+<td align="left"><a href="https://github.com/triAGENS/guacamole">https://github.com/triAGENS/guacamole</a></td>
+</tr>
+<tr>
+<td align="left">Documentation</td>
+<td align="left"><a href="http://rubydoc.info/gems/guacamole/frames">RubyDoc</a></td>
+</tr>
+<tr>
+<td align="left">CI</td>
+<td align="left"><a href="https://travis-ci.org/triAGENS/guacamole"><img src="https://travis-ci.org/triAGENS/guacamole.png" alt="Build Status"></a></td>
+</tr>
+<tr>
+<td align="left">Code Metrics</td>
+<td align="left"><a href="https://codeclimate.com/github/triAGENS/guacamole"><img src="https://codeclimate.com/github/triAGENS/guacamole.png" alt="Code Climate"></a></td>
+</tr>
+<tr>
+<td align="left">Gem Version</td>
+<td align="left"><a href="http://badge.fury.io/rb/guacamole"><img src="https://badge.fury.io/rb/guacamole.png" alt="Gem Version"></a></td>
+</tr>
+<tr>
+<td align="left">Dependencies</td>
+<td align="left"><a href="https://gemnasium.com/triAGENS/guacamole"><img src="https://gemnasium.com/triAGENS/guacamole.png" alt="Dependency Status"></a></td>
+</tr>
+<tr>
+<td align="left">Ready Stories</td>
+<td align="left"><a href="https://waffle.io/triagens/guacamole"><img src="https://badge.waffle.io/triagens/guacamole.png?label=ready" alt="Stories in Ready"></a></td>
+</tr>
+</tbody>
+</table><p>Guacamole is an ODM for ArangoDB that offers integration for Ruby on Rails.</p>
+
+<p>All tests run on Travis CI for the following versions of Ruby:</p>
+
+<ul>
+<li>MRI 1.9.3 and 2.0.0</li>
+<li>Rubinius 1.9 mode</li>
+<li>JRuby 1.9 mode</li>
+</ul><h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Add this line to your application's Gemfile:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">gem</span> <span class="s1">'guacamole'</span>
+</pre></div>
+
+<p>And then execute:</p>
+
+<pre lang="shell"><code>bundle
+</code></pre>
+
+<p>Or install it yourself as:</p>
+
+<pre lang="shell"><code>gem install guacamole
+</code></pre>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>There are two main concepts you have to be familiar with in Guacamole: Collections and models. Both of these are modules that you can mixed in to your classes:</p>
+
+<h3>
+<a name="models" class="anchor" href="#models"><span class="octicon octicon-link"></span></a>Models</h3>
+
+<p>Models are representations of your data. They are not aware of the database but work independent of it. A simple example for a model:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">Article</span>
+  <span class="kp">include</span> <span class="no">Guacamole</span><span class="o">::</span><span class="no">Model</span>
+
+  <span class="n">attribute</span> <span class="ss">:title</span><span class="p">,</span> <span class="nb">String</span>
+  <span class="n">attribute</span> <span class="ss">:comments</span><span class="p">,</span> <span class="nb">Array</span><span class="o">[</span><span class="no">Comment</span><span class="o">]</span>
+
+  <span class="n">validates</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>This example defines a model called Article, which has a title represented by a String and an array of comments. Comment in this case is another <code>Guacamole::Model</code>. The <code>Model</code> mixin will also add validation from ActiveModel to your model – it works as you know it from ActiveRecord for example.</p>
+
+<p>In a Rails application, they are stored in the <code>app/models</code> directory by convention.</p>
+
+<h3>
+<a name="collections" class="anchor" href="#collections"><span class="octicon octicon-link"></span></a>Collections</h3>
+
+<p>Collections are your gateway to the database. They persist your models and offer querying for them. They will translate the raw data from the database to your domain models and vice versa. By convention they are the pluralized version of the model with the suffix <code>Collection</code>. So given the model from above, this could be the according collection:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">ArticlesCollection</span>
+  <span class="kp">include</span> <span class="no">Guacamole</span><span class="o">::</span><span class="no">Collection</span>
+
+  <span class="n">map</span> <span class="k">do</span>
+    <span class="n">embeds</span> <span class="ss">:comments</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>As you can see above, you don't need to explicitly state that you are mapping to the <code>Article</code> class, because this is the naming convention. But what does <code>map</code> do?</p>
+
+<p>In the block you provide to <code>map</code> you can configure things that should happen when you map from the raw data to the model and vice versa. In a document store like ArangoDB you can have nested data – so the JSON stored in ArangoDB's <code>articles</code> collection could look something like this:</p>
+
+<div class="highlight highlight-json"><pre><span class="p">{</span>
+  <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"The grand blog post"</span><span class="p">,</span>
+  <span class="nt">"comments"</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">"text"</span><span class="p">:</span> <span class="s2">"This was really a grand blog post"</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">"text"</span><span class="p">:</span> <span class="s2">"I don't think it was that great"</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+</pre></div>
+
+<p>With the <code>map</code> configuration above it would take each of the objects in the comments hash and create instances of the <code>Comment</code> model from them. Then it would set the <code>comments</code> attribute of the new article and set it to the array of those comments.</p>
+
+<p>In a Rails application, they are stored in the <code>app/collections</code> directory by convention. <strong>Note:</strong> As of now you do have to add the <code>app/collections</code> path manually to the load path in your <code>config/application.rb</code>:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">config</span><span class="o">.</span><span class="n">autoload_paths</span> <span class="o">+=</span> <span class="no">Dir</span><span class="o">[</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'app'</span><span class="p">,</span> <span class="s1">'collections'</span><span class="p">,</span> <span class="s1">'*.rb'</span><span class="p">)</span><span class="o">.</span><span class="n">to_s</span><span class="o">]</span>
+</pre></div>
+
+<h3>
+<a name="configuration" class="anchor" href="#configuration"><span class="octicon octicon-link"></span></a>Configuration</h3>
+
+<p>You configure the connection to ArangoDB in the same fashion as you would configure a connection to a relational database in a Rails application: Just create a YAML file which holds the required parameters for each of your environment:</p>
+
+<div class="highlight highlight-yaml"><pre><span class="l-Scalar-Plain">development</span><span class="p-Indicator">:</span>
+  <span class="l-Scalar-Plain">protocol</span><span class="p-Indicator">:</span> <span class="s">'http'</span>
+  <span class="l-Scalar-Plain">host</span><span class="p-Indicator">:</span> <span class="s">'localhost'</span>
+  <span class="l-Scalar-Plain">port</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">8529</span>
+  <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span> <span class="s">''</span>
+  <span class="l-Scalar-Plain">username</span><span class="p-Indicator">:</span> <span class="s">''</span>
+  <span class="l-Scalar-Plain">database</span><span class="p-Indicator">:</span> <span class="s">'planet_express_development'</span>
+</pre></div>
+
+<p>We're looking at <code>config/guacamole.yml</code> to read this configuration. If you're using Capistrano or something else make sure you change your deployment recipes accordingly to use the <code>guacamole.yml</code> and not the <code>database.yml</code>.</p>
+
+<p><strong>Note:</strong> Currently we're not providing any testing helper, thus you need to make sure to cleanup the database yourself before each run. You can look at the <code>spec/acceptance/spec_helper.rb</code> of Guacamole for inspiration of how to do this.</p>
+
+<h2>
+<a name="issues-or-questions" class="anchor" href="#issues-or-questions"><span class="octicon octicon-link"></span></a>Issues or Questions</h2>
+
+<p>If you find a bug in this gem, please report it on <a href="https://github.com/triAGENS/guacamole/issues">our tracker</a>. We use <a href="https://waffle.io/triagens/guacamole">Waffle.io</a> to manage the tickets – go there to see the current status of the ticket. If you have a question, just contact us via the <a href="https://groups.google.com/forum/?fromgroups#!forum/ashikawa">mailing list</a> – we are happy to help you <img class="emoji" title=":smile:" alt=":smile:" src="https://github.global.ssl.fastly.net/images/icons/emoji/smile.png" height="20" width="20" align="absmiddle"></p>
+
+<h2>
+<a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h2>
+
+<p>If you want to contribute to the project, see CONTRIBUTING.md for details. It contains information on our process and how to set up everything. The following people have contributed to this project:</p>
+
+<ul>
+<li>Lucas Dohmen (<a href="https://github.com/moonglum">@moonglum</a>): Developer</li>
+<li>Dirk Breuer (<a href="https://github.com/railsbros-dirk">@railsbros-dirk</a>): Developer</li>
+</ul>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Guacamole maintained by <a href="https://github.com/triAGENS">triAGENS</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
