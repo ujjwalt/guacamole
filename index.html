@@ -1,130 +1,321 @@
 <!DOCTYPE html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Guacamole : An ODM for ArangoDB in Ruby" />
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
 
-    <title>Guacamole</title>
+    <title>Guacamole by triAGENS</title>
   </head>
 
   <body>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/triAGENS/guacamole">View on GitHub</a>
+    <header>
+      <div class="container">
+        <h1>Guacamole</h1>
+        <h2>An ODM for ArangoDB in Ruby</h2>
 
-          <h1 id="project_title">Guacamole</h1>
-          <h2 id="project_tagline">An ODM for ArangoDB in Ruby</h2>
+        <section id="downloads">
+          <a href="https://github.com/triAGENS/guacamole/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/triAGENS/guacamole/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/triAGENS/guacamole" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/triAGENS/guacamole/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/triAGENS/guacamole/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
+    <div class="container">
+      <section id="main_content">
+        <p><a href="http://rubydoc.info/gems/guacamole/frames"><img src="http://img.shields.io/badge/%F0%9F%93%84-RubyDoc-be1d77.svg" alt="RubyDoc"></a>
+<a href="https://travis-ci.org/triAGENS/guacamole"><img src="http://img.shields.io/travis/triAGENS/guacamole.svg" alt="Build Status"></a>
+<a href="https://codeclimate.com/github/triAGENS/guacamole"><img src="http://img.shields.io/codeclimate/github/triAGENS/guacamole.svg" alt="Code Climate"></a>
+<a href="https://rubygems.org/gems/guacamole"><img src="http://img.shields.io/gem/v/guacamole.svg" alt="Gem Version"></a></p>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h1>
+<h1>
 <a name="guacamole" class="anchor" href="#guacamole"><span class="octicon octicon-link"></span></a>Guacamole</h1>
 
-<table>
-<thead><tr>
-<th align="left">Project</th>
-<th align="left">Guacamole</th>
-</tr></thead>
-<tbody>
-<tr>
-<td align="left">Homepage</td>
-<td align="left"><a href="https://github.com/triAGENS/guacamole">https://github.com/triAGENS/guacamole</a></td>
-</tr>
-<tr>
-<td align="left">Documentation</td>
-<td align="left"><a href="http://rubydoc.info/gems/guacamole/frames">RubyDoc</a></td>
-</tr>
-<tr>
-<td align="left">CI</td>
-<td align="left"><a href="https://travis-ci.org/triAGENS/guacamole"><img src="https://travis-ci.org/triAGENS/guacamole.png" alt="Build Status"></a></td>
-</tr>
-<tr>
-<td align="left">Code Metrics</td>
-<td align="left"><a href="https://codeclimate.com/github/triAGENS/guacamole"><img src="https://codeclimate.com/github/triAGENS/guacamole.png" alt="Code Climate"></a></td>
-</tr>
-<tr>
-<td align="left">Gem Version</td>
-<td align="left"><a href="http://badge.fury.io/rb/guacamole"><img src="https://badge.fury.io/rb/guacamole.png" alt="Gem Version"></a></td>
-</tr>
-<tr>
-<td align="left">Dependencies</td>
-<td align="left"><a href="https://gemnasium.com/triAGENS/guacamole"><img src="https://gemnasium.com/triAGENS/guacamole.png" alt="Dependency Status"></a></td>
-</tr>
-<tr>
-<td align="left">Ready Stories</td>
-<td align="left"><a href="https://waffle.io/triagens/guacamole"><img src="https://badge.waffle.io/triagens/guacamole.png?label=ready" alt="Stories in Ready"></a></td>
-</tr>
-</tbody>
-</table><p>Guacamole is an ODM for ArangoDB that offers integration for Ruby on Rails.</p>
-
-<p>All tests run on Travis CI for the following versions of Ruby:</p>
+<p>Guacamole is an Object Document Mapper (ODM) for the multi-model NoSQL database <a href="https://www.arangodb.org/">ArangoDB</a>. Its main goal is to support easy integration into Ruby on Rails but will likely work in other Rack-based frameworks as well. There are a couple of design goals behind Guacamole which should drive all our development effort:</p>
 
 <ul>
-<li>MRI 1.9.3 and 2.0.0</li>
-<li>Rubinius 1.9 mode</li>
-<li>JRuby 1.9 mode</li>
-</ul><h2>
-<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+<li>Easy integration on the View layer (i.e. form builders)</li>
+<li>Reflect the nature of NoSQL in general and ArangoDB in particular</li>
+<li>Focus on long-term maintainability of your application</li>
+</ul><p>While the first two points don't need any further explanation we want to lay out the motivation behind the last point: 'Ease of use' is very important to us, but we made some fundamental decisions which will cause a stepper learning curve than other libraries, notably ActiveRecord. If you have a traditional Rails background you will find some things quite different. We decided to go this direction, because we think it better suites the features of ArangoDB. Applying the semantics of a different environment maybe helps with the first steps but will become problematic if you further advance in your understanding of the possibilities.</p>
+
+<p>That said we still think we provide a sufficient API that is quite easy to get hold of. It is just a bit different from what you were doing with ActiveRecord.</p>
+
+<p>For a high-level introduction you can also refer to <a href="https://speakerdeck.com/railsbros_dirk/how-to-make-guacamole">this presentation</a>.</p>
+
+<h2>
+<a name="getting-started-with-a-fresh-rails-application" class="anchor" href="#getting-started-with-a-fresh-rails-application"><span class="octicon octicon-link"></span></a>Getting started (with a fresh Rails application)</h2>
+
+<p>Since Guacamole is in an alpha state we suggest you create a new Rails application to play around with it. We don't recommend adding it to a production application.</p>
+
+<p>First of all create your shiny new application, without ActiveRecord of course:</p>
+
+<pre lang="shell"><code>rails new -O $my_awesome_app
+</code></pre>
 
 <p>Add this line to your application's Gemfile:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="n">gem</span> <span class="s1">'guacamole'</span>
 </pre></div>
 
-<p>And then execute:</p>
+<p>And then install the new dependencies:</p>
 
-<pre lang="shell"><code>bundle
+<pre lang="shell"><code>bundle install
 </code></pre>
 
-<p>Or install it yourself as:</p>
+<h3>
+<a name="configuration" class="anchor" href="#configuration"><span class="octicon octicon-link"></span></a>Configuration</h3>
 
-<pre lang="shell"><code>gem install guacamole
+<p>After you created the application and installed the dependencies the first thing you need is a configuration file. The database connection is pretty much configured as expected: With a YAML file. Luckily you don't have to create this file by yourself but you can use a generator to do it for you:</p>
+
+<pre lang="shell"><code>bundle exec rails generate guacamole:config
 </code></pre>
+
+<p>This will create a default configuration at <code>config/guacamole.yml</code>:</p>
+
+<div class="highlight highlight-yaml"><pre><span class="l-Scalar-Plain">development</span><span class="p-Indicator">:</span>
+  <span class="l-Scalar-Plain">protocol</span><span class="p-Indicator">:</span> <span class="s">'http'</span>
+  <span class="l-Scalar-Plain">host</span><span class="p-Indicator">:</span> <span class="s">'localhost'</span>
+  <span class="l-Scalar-Plain">port</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">8529</span>
+  <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span> <span class="s">''</span>
+  <span class="l-Scalar-Plain">username</span><span class="p-Indicator">:</span> <span class="s">''</span>
+  <span class="l-Scalar-Plain">database</span><span class="p-Indicator">:</span> <span class="s">'pony_blog_development'</span>
+</pre></div>
+
+<p>After you created a configuration file you can create the database as in any other Rails project:</p>
+
+<pre lang="shell"><code>bundle exec rake db:create
+</code></pre>
+
+<p>If you're using Capistrano or something else make sure you change your deployment recipes accordingly to use the <code>guacamole.yml</code> and not the <code>database.yml</code>. Of course you would want to add <a href="https://www.arangodb.org/manuals/2/DbaManualAuthentication.html">authentication</a> for the production environment. Additionally you may want to consider putting ArangoDB behind a SSL-proxy or use the <a href="https://www.arangodb.org/manuals/2/CommandLine.html#CommandLineArangoEndpoint">built in SSL support</a>.</p>
+
+<p>Now where everything is set up we can go ahead and create our application's logic. Before we give you some code to copy and paste we first give you a general usage and design overview.</p>
 
 <h2>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
 
-<p>There are two main concepts you have to be familiar with in Guacamole: Collections and models. Both of these are modules that you can mixed in to your classes:</p>
+<p>One of the key features of Guacamole is the implementation of the <a href="http://martinfowler.com/eaaCatalog/dataMapper.html">Data Mapper Patter</a>. This brings a lot of good things along, like</p>
+
+<ul>
+<li>Improved testability</li>
+<li>Separation of Concern and</li>
+<li>Easier to support database features like embedded objects</li>
+</ul><p>The gist of the pattern is you have two classes where you would have one when you use ActiveRecord: A <code>Collection</code> and a <code>Model</code>. The <code>Collection</code> is responsible for getting data from and writing data to the database. The <code>Model</code> represents the domain logic (i.e. attributes) and has no idea what a database is. Due to this you could far easier test the domain logic without a database dependency. But you have always two (or more) classes around. The following will introduce you to both those classes.</p>
 
 <h3>
 <a name="models" class="anchor" href="#models"><span class="octicon octicon-link"></span></a>Models</h3>
 
-<p>Models are representations of your data. They are not aware of the database but work independent of it. A simple example for a model:</p>
+<p>Models are representations of your data. They are not aware of the database but work independently of it. Guacamole ships with a generator for models:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">Article</span>
+<pre lang="shell"><code>bundle exec rails generate model pony name:string birthday:date color:string
+</code></pre>
+
+<p>This will generate both a <code>Model</code> <strong>and</strong> a <code>Collection</code> (more on that later). If you don't want a <code>Collection</code> to be created just add the <code>--skip-collection</code> flag to the generator. The <code>Model</code> will be written to <code>app/models/pony.rb</code> and it will have the following content:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">Pony</span>
   <span class="kp">include</span> <span class="no">Guacamole</span><span class="o">::</span><span class="no">Model</span>
 
-  <span class="n">attribute</span> <span class="ss">:title</span><span class="p">,</span> <span class="nb">String</span>
-  <span class="n">attribute</span> <span class="ss">:comments</span><span class="p">,</span> <span class="nb">Array</span><span class="o">[</span><span class="no">Comment</span><span class="o">]</span>
-
-  <span class="n">validates</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
+  <span class="n">attribute</span> <span class="ss">:name</span><span class="p">,</span> <span class="nb">String</span>
+  <span class="n">attribute</span> <span class="ss">:birthday</span><span class="p">,</span> <span class="no">Date</span>
+  <span class="n">attribute</span> <span class="ss">:color</span><span class="p">,</span> <span class="nb">String</span>
 <span class="k">end</span>
 </pre></div>
 
-<p>This example defines a model called Article, which has a title represented by a String and an array of comments. Comment in this case is another <code>Guacamole::Model</code>. The <code>Model</code> mixin will also add validation from ActiveModel to your model – it works as you know it from ActiveRecord for example.</p>
+<p>Since the database doesn't know anything about a schema we must define the attributes in the model class itself. At the same time this has the advantage to open the model class and see what attributes it has. An attribute is defined with the <code>attribute</code> class method. We use <a href="https://github.com/solnic/virtus">Virtus</a> for this purpose. Basically you add give the attribute a name and a type. The type have to be the actual class and <strong>not</strong> a string representation of the class. You could even define collection classes:</p>
 
-<p>In a Rails application, they are stored in the <code>app/models</code> directory by convention.</p>
+<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">Pony</span>
+  <span class="kp">include</span> <span class="no">Guacamole</span><span class="o">::</span><span class="no">Model</span>
+
+  <span class="n">attribute</span> <span class="ss">:type</span><span class="p">,</span> <span class="nb">Array</span><span class="o">[</span><span class="nb">String</span><span class="o">]</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>For further reference what is possible please refer to the <a href="http://rubydoc.info/gems/virtus/1.0.2/frames">Virtus documentation</a>. One thing to add here, whenever you assign a value to an attribute Virtus will perform a type coercion:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">pinkie_pie</span> <span class="o">=</span> <span class="no">Pony</span><span class="o">.</span><span class="n">new</span>
+<span class="n">pinkie_pie</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="ss">:pink</span>
+<span class="c1"># =&gt; "pink"</span>
+<span class="n">pinkie_pie</span><span class="o">.</span><span class="n">type</span>  <span class="o">=</span> <span class="s2">"Earthpony"</span>
+<span class="c1"># =&gt; ["Earthpony"]</span>
+</pre></div>
+
+<h4>
+<a name="timestamps" class="anchor" href="#timestamps"><span class="octicon octicon-link"></span></a>Timestamps</h4>
+
+<p>We will automatically add time stamp columns to all models when you include <code>Guacamole::Model</code>. We eventually will make this configurable, but for now it is not.</p>
+
+<h4>
+<a name="the-id-of-a-model" class="anchor" href="#the-id-of-a-model"><span class="octicon octicon-link"></span></a>The ID of a model</h4>
+
+<p>In ArangoDB a document has three internal fields: <code>_id</code>, <code>_key</code> and <code>_rev</code>. For a detailed explanation how these three work together please refer to the <a href="https://www.arangodb.org/manuals/2/HandlingDocuments.html#HandlingDocumentsIntro">ArangoDB documentation</a>. Within Guacamole we will always you the <code>_key</code> because it is enough the identify any document within a collection. Both the <code>_key</code> and <code>_rev</code> attribute are available through the <code>Guacamole::Model#key</code> and <code>Guacamole::Model#rev</code> attribute. You don't have to do anything for this, we will take care of this for you.</p>
+
+<p>Additionally you will find an <code>id</code> method on you models. This is just an alias for <code>key</code>. This was added for <code>ActiveModel::Conversion</code> compliance. You <strong>should always</strong> use <code>key</code>.</p>
+
+<h4>
+<a name="validations" class="anchor" href="#validations"><span class="octicon octicon-link"></span></a>Validations</h4>
+
+<p>When including <code>Guacamole::Model</code> you will not only get the functionality of Virtus but some ActiveModel love, too. Besides the <a href="http://api.rubyonrails.org/classes/ActiveModel/Naming.html"><code>ActiveModel::Naming</code></a> and <a href="http://api.rubyonrails.org/classes/ActiveModel/Conversion.html"><code>ActiveModel::Conversion</code></a> module you will get <a href="http://api.rubyonrails.org/classes/ActiveModel/Validations.html">Validations</a> as well. Thus you could just write something like this:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">Pony</span>
+  <span class="kp">include</span> <span class="no">Guacamole</span><span class="o">::</span><span class="no">Model</span>
+
+  <span class="n">attribute</span> <span class="ss">:name</span><span class="p">,</span> <span class="nb">String</span>
+  <span class="n">attribute</span> <span class="ss">:color</span><span class="p">,</span> <span class="nb">String</span>
+
+  <span class="n">validates</span> <span class="ss">:color</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="n">transparent_pony</span> <span class="o">=</span> <span class="no">Pony</span><span class="o">.</span><span class="n">new</span>
+<span class="n">transparent_pony</span><span class="o">.</span><span class="n">valid?</span>
+<span class="c1"># =&gt; false</span>
+<span class="n">transparent_pony</span><span class="o">.</span><span class="n">errors</span><span class="o">[</span><span class="ss">:color</span><span class="o">]</span>
+<span class="c1"># =&gt; ["can't be blank"]</span>
+</pre></div>
+
+<p>As the model doesn't know anything about the database you cannot define database-dependent validations here (i.e.: uniqueness). This logic has to be handled in the <code>Collection</code>. That said, we have no strategy how to model this in the <code>Collection</code>. If you have any idea about this we would love to hear about it.</p>
 
 <h3>
 <a name="collections" class="anchor" href="#collections"><span class="octicon octicon-link"></span></a>Collections</h3>
 
 <p>Collections are your gateway to the database. They persist your models and offer querying for them. They will translate the raw data from the database to your domain models and vice versa. By convention they are the pluralized version of the model with the suffix <code>Collection</code>. So given the model from above, this could be the according collection:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">ArticlesCollection</span>
+<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">PoniesCollection</span>
+  <span class="kp">include</span> <span class="no">Guacamole</span><span class="o">::</span><span class="no">Collection</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>As with the models we provide a generator to help you creating your collection classes. In most cases you won't need to invoke this generator due to the model generator already created a collection for you. But if for any reason you need another collection without a model you could do it like this:</p>
+
+<pre lang="shell"><code>bundle exec rails generate collection ponies
+</code></pre>
+
+<p>Currently your options what you can do with a collection are quire limited. We will eventually add more features, but for now you basically have this features:</p>
+
+<ul>
+<li>CRUD operations for your models</li>
+<li>Where the "Read"-part is limited to <a href="https://www.arangodb.org/manuals/2/SimpleQueries.html">Simple Queries</a>. But more on this later.</li>
+<li>Mapping embedded models</li>
+<li>Realizing basic associations</li>
+</ul><p>For all the mapping related parts you don't have any configuration options yet, but have to stick with the conventions. Obviously this will change in the future but for now there more important parts to work on. Before we dig deeper into the mapping of embedded or associated models let us look at the CRUD functionality.</p>
+
+<h4>
+<a name="create-models" class="anchor" href="#create-models"><span class="octicon octicon-link"></span></a>Create models</h4>
+
+<p>To create a model just pass it to the <code>save</code> method of the <code>Collection</code> in charge:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">pinkie</span> <span class="o">=</span> <span class="no">Pony</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Pinkie Pie"</span><span class="p">)</span>
+<span class="no">PoniesCollection</span><span class="o">.</span><span class="n">save</span> <span class="n">pinkie</span>
+<span class="c1"># =&gt; #&lt;Pony:0x124 …&gt;</span>
+</pre></div>
+
+<p>The <code>save</code> method will trigger model validation before writing it to the database. If the model is not valid <code>false</code> will be returned. All validation errors can be retrieved from the model itself. They are stored in <code>errors</code> attribute which is provided by <code>ActiveModel::Validations</code>.</p>
+
+<p>Every model has a <code>persisted?</code> method which will return <code>false</code> unless the model is saved to the database and thus has a <code>key</code> assigned.</p>
+
+<h4>
+<a name="update-models" class="anchor" href="#update-models"><span class="octicon octicon-link"></span></a>Update models</h4>
+
+<p>Updating models is just the same as creating models in the first place:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">existing_pony</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"Applejack"</span>
+<span class="no">PoniesCollection</span><span class="o">.</span><span class="n">save</span> <span class="n">existing_pony</span>
+<span class="c1"># =&gt; #&lt;Pony:0x1451 …&gt;</span>
+</pre></div>
+
+<p><strong>Note</strong>: As of today there is <strong>no dirty tracking</strong>. Models will always be updated in the database when you call <code>save</code> – no matter if they have changed or not.</p>
+
+<h4>
+<a name="delete-models" class="anchor" href="#delete-models"><span class="octicon octicon-link"></span></a>Delete models</h4>
+
+<p>You can <code>delete</code> models from the database by either passing the model to be deleted or just its key. In both cases the key will be returned:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">PoniesCollection</span><span class="o">.</span><span class="n">delete</span> <span class="n">existing_pony</span>
+<span class="c1"># =&gt; `existing_pony.key`</span>
+</pre></div>
+
+<h4>
+<a name="retrieve-models" class="anchor" href="#retrieve-models"><span class="octicon octicon-link"></span></a>Retrieve models</h4>
+
+<p>As mentioned before querying for models is quite limited as of now. We only support <a href="https://www.arangodb.org/manuals/2/SimpleQueries.html">Simple Queries</a> at this point. You can perform the following basic operations with them:</p>
+
+<ul>
+<li>Getting a single model <code>by_key</code>
+</li>
+<li>Getting <code>all</code> models from a collection.</li>
+<li>Query models <code>by_example</code>. You can <strong>only</strong> perform equality checks with this.</li>
+<li>You can <code>skip</code> and <code>limit</code> the results</li>
+</ul><p>You always need to start a query by either calling <code>all</code> or <code>by_example</code>. You could chain those with <code>skip</code> and <code>limit</code>. The query to the database will only be performed when you actually access the documents:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">some_ponies</span> <span class="o">=</span> <span class="no">PoniesCollection</span><span class="o">.</span><span class="n">by_example</span><span class="p">(</span><span class="ss">color</span><span class="p">:</span> <span class="s1">'green'</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="c1"># =&gt; #&lt;Guacamole::Query:0x1212 …&gt;</span>
+<span class="n">some_ponies</span><span class="o">.</span><span class="n">first</span>
+<span class="c1"># The request to the database is made</span>
+<span class="c1"># =&gt; #&lt;Pony:0x90u81 …&gt;</span>
+</pre></div>
+
+<p>We're well aware this is not sufficient for building sophisticated applications. We're are working on something to make <a href="https://www.arangodb.org/manuals/2/Aql.html">AQL</a> usable from Guacamole.</p>
+
+<h3>
+<a name="mapping" class="anchor" href="#mapping"><span class="octicon octicon-link"></span></a>Mapping</h3>
+
+<p>As the name "Data Mapper" suggests there is some sort of mapping going on behind the scenes. The mapping relates to the process of <em>mapping</em> documents from the database to the domain models. </p>
+
+<p>The <code>Collection</code> class will lookup the appropriate <code>Model</code> class based on its own name (i.e.: the <code>PoniesCollection</code> will look for a <code>Pony</code> class). Currently there is no option to configure this so you're stuck with our conventions (for now):</p>
+
+<ul>
+<li>Collections in ArangoDB are the plural form of the <code>Model</code> class name</li>
+<li>The <code>Collection</code> class is the plural form of the <code>Model</code> class name with the suffix <code>Collection</code>
+</li>
+</ul><p>Without any configuration we will just map the attributes present in your domain model. If you retrieve a document from the database that contains other attributes then your domain model they will be silently discarded. To illustrate this imagine we have a document in the <code>ponies</code> collection which looks like this:</p>
+
+<div class="highlight highlight-json"><pre><span class="p">{</span>
+  <span class="nt">"_key"</span><span class="p">:</span> <span class="s2">"303"</span><span class="p">,</span>
+  <span class="nt">"_rev"</span><span class="p">:</span> <span class="s2">"1019391"</span><span class="p">,</span>
+  <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"Applejack"</span><span class="p">,</span>
+  <span class="nt">"color"</span><span class="p">:</span> <span class="s2">"green"</span><span class="p">,</span>
+  <span class="nt">"occupation"</span><span class="p">:</span> <span class="s2">"Farmer"</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>When we receive this document and map it against the above mentioned model there will be no <code>occupation</code> attribute be present:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">pony</span> <span class="o">=</span> <span class="no">PoniesCollection</span><span class="o">.</span><span class="n">by_key</span> <span class="s2">"303"</span>
+<span class="n">pony</span><span class="o">.</span><span class="n">occupation</span>
+<span class="c1"># =&gt; NoMethodError: undefined method `occupation' for #&lt;Pony:0x00000105fc77f8&gt;</span>
+</pre></div>
+
+<p>Currently there is not option to change the mapping of attributes. If you want to map more or less attributes you should create another model for that purpose.</p>
+
+<h4>
+<a name="associations" class="anchor" href="#associations"><span class="octicon octicon-link"></span></a>Associations</h4>
+
+<p>Besides simple attributes we want to handle associations between models. To add an association between your models you have two options: <strong>embedded</strong> and <strong>referenced</strong>.</p>
+
+<h4>
+<a name="embedded-references" class="anchor" href="#embedded-references"><span class="octicon octicon-link"></span></a>Embedded references</h4>
+
+<p>If you go with the <code>embeds</code> option the embedded model will be stored within the <strong>same</strong> document in the database. The comments of a blog post are a good example where this can be handy. While the database will have only one document the domain can still know about a <code>Comment</code> and a <code>Post</code>. In this case you would end up with two models and one collection:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">Comment</span>
+  <span class="kp">include</span> <span class="no">Guacamole</span><span class="o">::</span><span class="no">Model</span>
+
+  <span class="n">attribute</span> <span class="ss">:text</span><span class="p">,</span> <span class="nb">String</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Post</span>
+  <span class="kp">include</span> <span class="no">Guacamole</span><span class="o">::</span><span class="no">Model</span>
+
+  <span class="n">attribute</span> <span class="ss">:title</span><span class="p">,</span> <span class="nb">String</span>
+  <span class="n">attribute</span> <span class="ss">:body</span><span class="p">,</span>  <span class="nb">String</span>
+  <span class="n">attribute</span> <span class="ss">:comments</span><span class="p">,</span> <span class="nb">Array</span><span class="o">[</span><span class="no">Comment</span><span class="o">]</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">PostsCollection</span>
   <span class="kp">include</span> <span class="no">Guacamole</span><span class="o">::</span><span class="no">Collection</span>
 
   <span class="n">map</span> <span class="k">do</span>
@@ -133,48 +324,127 @@
 <span class="k">end</span>
 </pre></div>
 
-<p>As you can see above, you don't need to explicitly state that you are mapping to the <code>Article</code> class, because this is the naming convention. But what does <code>map</code> do?</p>
-
-<p>In the block you provide to <code>map</code> you can configure things that should happen when you map from the raw data to the model and vice versa. In a document store like ArangoDB you can have nested data – so the JSON stored in ArangoDB's <code>articles</code> collection could look something like this:</p>
+<p>As you can see, from the model perspective there is nothing special about an embedded association. It is just another attribute on the <code>Post</code> class. How this is stored will be configured where it is handled: In the <code>PostsCollection</code>. Within the <code>map</code> block you put all the mapping related configuration. The <code>embeds</code> method will make sure that <code>Comment</code>s are correctly stored and received within the database. Be aware that embedded models will not have any <code>_key</code>, <code>_id</code> or <code>_rev</code> attribute. But they will have the time stamp attributes correctly populated. Within ArangoDB the resulting document will look like this:</p>
 
 <div class="highlight highlight-json"><pre><span class="p">{</span>
+  <span class="nt">"_id"</span><span class="p">:</span> <span class="p">[</span><span class="err">...</span><span class="p">],</span>
+  <span class="nt">"_rev"</span><span class="p">:</span> <span class="p">[</span><span class="err">...</span><span class="p">],</span>
+  <span class="nt">"_key"</span><span class="p">:</span> <span class="p">[</span><span class="err">...</span><span class="p">],</span>
   <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"The grand blog post"</span><span class="p">,</span>
-  <span class="nt">"comments"</span><span class="p">:</span> <span class="p">[</span>
+  <span class="nt">"body"</span><span class="p">:</span> <span class="s2">"Lorem ipsum [...]"</span><span class="p">,</span>
+  <span class="nt">"create_at"</span><span class="p">:</span> <span class="s2">"2014-05-03T16:55:43+02:00"</span><span class="p">,</span>
+  <span class="nt">"updated_at"</span><span class="p">:</span> <span class="s2">"2014-05-03T16:55:43+02:00"</span>
+  <span class="s2">"comments"</span><span class="p">:</span> <span class="p">[</span>
     <span class="p">{</span>
-      <span class="nt">"text"</span><span class="p">:</span> <span class="s2">"This was really a grand blog post"</span>
+      <span class="nt">"text"</span><span class="p">:</span> <span class="s2">"This was really a grand blog post"</span><span class="p">,</span>
+      <span class="nt">"create_at"</span><span class="p">:</span> <span class="s2">"2014-05-08T16:55:43+02:00"</span><span class="p">,</span>
+      <span class="nt">"updated_at"</span><span class="p">:</span> <span class="s2">"2014-05-08T16:55:43+02:00"</span>
     <span class="p">},</span>
     <span class="p">{</span>
-      <span class="nt">"text"</span><span class="p">:</span> <span class="s2">"I don't think it was that great"</span>
+      <span class="nt">"text"</span><span class="p">:</span> <span class="s2">"I don't think it was that great"</span><span class="p">,</span>
+      <span class="nt">"create_at"</span><span class="p">:</span> <span class="s2">"2014-05-04T16:55:43+02:00"</span><span class="p">,</span>
+      <span class="nt">"updated_at"</span><span class="p">:</span> <span class="s2">"2014-05-04T16:55:43+02:00"</span>
     <span class="p">}</span>
   <span class="p">]</span>
 </pre></div>
 
-<p>With the <code>map</code> configuration above it would take each of the objects in the comments hash and create instances of the <code>Comment</code> model from them. Then it would set the <code>comments</code> attribute of the new article and set it to the array of those comments.</p>
+<p><strong>Note</strong>: Again this will only work if you stick with the convention. So far there is no support to configure this more fine grained.</p>
 
-<p>In a Rails application, they are stored in the <code>app/collections</code> directory by convention. <strong>Note:</strong> As of now you do have to add the <code>app/collections</code> path manually to the load path in your <code>config/application.rb</code>:</p>
+<h4>
+<a name="references" class="anchor" href="#references"><span class="octicon octicon-link"></span></a>References</h4>
 
-<div class="highlight highlight-ruby"><pre><span class="n">config</span><span class="o">.</span><span class="n">autoload_paths</span> <span class="o">+=</span> <span class="no">Dir</span><span class="o">[</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'app'</span><span class="p">,</span> <span class="s1">'collections'</span><span class="p">,</span> <span class="s1">'*.rb'</span><span class="p">)</span><span class="o">.</span><span class="n">to_s</span><span class="o">]</span>
+<p>While there are perfect use cases to embed documents into each other there are still plenty of use cases where referencing documents makes perfect sense. In fact this one feature where ArangoDB can really shine: Instead of just getting all referenced documents with dedicated calls to the server and without the possibility to perform any functions like filtering or sorting the data, ArangoDB can perform joins over your data just like a RDBMS.</p>
+
+<p><strong>Note</strong>: In the current version we're not using this power since we need to support AQL before that. As of now references are realized with dedicated calls to the database.</p>
+
+<p>To define references between models you just add the appropriate attributes to the <code>Model</code> classes:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">Author</span>
+  <span class="kp">include</span> <span class="no">Guacamole</span><span class="o">::</span><span class="no">Model</span>
+
+  <span class="n">attribute</span> <span class="ss">:name</span><span class="p">,</span> <span class="nb">String</span>
+  <span class="n">attribute</span> <span class="ss">:posts</span><span class="p">,</span> <span class="nb">Array</span><span class="o">[</span><span class="no">Post</span><span class="o">]</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Post</span>
+  <span class="kp">include</span> <span class="no">Guacamole</span><span class="o">::</span><span class="no">Model</span>
+
+  <span class="n">attribute</span> <span class="ss">:title</span><span class="p">,</span> <span class="nb">String</span>
+  <span class="n">attribute</span> <span class="ss">:author</span><span class="p">,</span> <span class="no">Author</span>
+<span class="k">end</span>
 </pre></div>
 
-<h3>
-<a name="configuration" class="anchor" href="#configuration"><span class="octicon octicon-link"></span></a>Configuration</h3>
+<p>As with the embedded models the real work happens in the <code>Collection</code> classes:</p>
 
-<p>You configure the connection to ArangoDB in the same fashion as you would configure a connection to a relational database in a Rails application: Just create a YAML file which holds the required parameters for each of your environment:</p>
+<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">AuthorsCollection</span>
+  <span class="kp">include</span> <span class="no">Guacamole</span><span class="o">::</span><span class="no">Collection</span>
 
-<div class="highlight highlight-yaml"><pre><span class="l-Scalar-Plain">development</span><span class="p-Indicator">:</span>
-  <span class="l-Scalar-Plain">protocol</span><span class="p-Indicator">:</span> <span class="s">'http'</span>
-  <span class="l-Scalar-Plain">host</span><span class="p-Indicator">:</span> <span class="s">'localhost'</span>
-  <span class="l-Scalar-Plain">port</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">8529</span>
-  <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span> <span class="s">''</span>
-  <span class="l-Scalar-Plain">username</span><span class="p-Indicator">:</span> <span class="s">''</span>
-  <span class="l-Scalar-Plain">database</span><span class="p-Indicator">:</span> <span class="s">'planet_express_development'</span>
+  <span class="n">map</span> <span class="k">do</span>
+    <span class="n">referenced_by</span> <span class="ss">:posts</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">PostsCollection</span>
+  <span class="kp">include</span> <span class="no">Guacamole</span><span class="o">::</span><span class="no">Collection</span>
+
+  <span class="n">map</span> <span class="k">do</span>
+    <span class="n">references</span> <span class="ss">:user</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 </pre></div>
 
-<p>We're looking at <code>config/guacamole.yml</code> to read this configuration. If you're using Capistrano or something else make sure you change your deployment recipes accordingly to use the <code>guacamole.yml</code> and not the <code>database.yml</code>.</p>
+<p>Under the hood we will add an <code>author_id</code> to all posts holding the reference to the author. As a user this will be completely transparent for you:</p>
 
-<p><strong>Note:</strong> Currently we're not providing any testing helper, thus you need to make sure to cleanup the database yourself before each run. You can look at the <code>spec/acceptance/spec_helper.rb</code> of Guacamole for inspiration of how to do this.</p>
+<div class="highlight highlight-ruby"><pre><span class="n">author</span> <span class="o">=</span> <span class="no">AuthorsCollection</span><span class="o">.</span><span class="n">by_key</span> <span class="s2">"23124"</span>
+<span class="n">author</span><span class="o">.</span><span class="n">posts</span>
+<span class="c1"># =&gt; [#&lt;Post:0x12341 …&gt;, …]</span>
+</pre></div>
+
+<p>The same goes for saving the data. Just add <code>Post</code>s to an <code>Author</code> as you would in plain Ruby. Passing one of the models to its <code>Collection</code> class will take care of the rest:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">author</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Lauren Faust"</span><span class="p">)</span>
+<span class="n">author</span><span class="o">.</span><span class="n">posts</span> <span class="o">&lt;&lt;</span> <span class="no">Post</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">title</span><span class="p">:</span> <span class="s2">"This is amazing"</span><span class="p">)</span>
+
+<span class="no">AuthorsCollection</span><span class="o">.</span><span class="n">save</span> <span class="n">author</span>
+<span class="c1"># =&gt; Will save both the author and the post</span>
+</pre></div>
 
 <h2>
+<a name="integration-into-the-rails-ecosystem" class="anchor" href="#integration-into-the-rails-ecosystem"><span class="octicon octicon-link"></span></a>Integration into the Rails Ecosystem™</h2>
+
+<p>Guacamole is a very young project. A lot of stuff is missing but still, if you want to get started with ArangoDB and are using Ruby/Rails it will give you a nice head start. Besides a long TODO list we want to hint to some points to help you integrate Guacamole with the rest of the Rails ecosystem:</p>
+
+<h3>
+<a name="testing" class="anchor" href="#testing"><span class="octicon octicon-link"></span></a>Testing</h3>
+
+<p>Currently we're not providing any testing helper, thus you need to make sure to cleanup the database yourself before each run. You can look at the <a href="https://github.com/triAGENS/guacamole/blob/master/spec/acceptance/spec_helper.rb"><code>spec/acceptance/spec_helper.rb</code></a> of Guacamole for inspiration of how to do that.</p>
+
+<p>For test data generation we're using the awesome <a href="http://www.fabricationgem.org/">Fabrication gem</a>. Again you find some usage examples in under Guacamole's own acceptance tests. We didn't tested Factory Girl yet, but it eventually will work, too.</p>
+
+<h3>
+<a name="authentication" class="anchor" href="#authentication"><span class="octicon octicon-link"></span></a>Authentication</h3>
+
+<p>Any integration into an authentication framework need to be done by you. At this time we have nothing to share with you about this topic.</p>
+
+<h3>
+<a name="forms" class="anchor" href="#forms"><span class="octicon octicon-link"></span></a>Forms</h3>
+
+<p>While we not tested them they should probably work due to the ActiveModel compliance. But again, this not confirmed and you need to try it out by yourself.</p>
+
+<p>If you give Guacamole a try, please feel free to ask us any question or give us feedback to anything on your mind. This is really crucial for us and we would be more than happy to hear back from you.</p>
+
+<h2>
+<a name="todos" class="anchor" href="#todos"><span class="octicon octicon-link"></span></a>Todos</h2>
+
+<p>While there are a lot of open issues we would like to present you a high level overview of upcoming features:</p>
+
+<ul>
+<li>Basic AQL support for more useful queries</li>
+<li>Configuration of mapping</li>
+<li>Callbacks and dirty tracking for models</li>
+<li>An example Rails application to be used as both an acceptance test suite and a head start for Guacamole and ArangoDB</li>
+<li>An AQL query builder</li>
+</ul><h2>
 <a name="issues-or-questions" class="anchor" href="#issues-or-questions"><span class="octicon octicon-link"></span></a>Issues or Questions</h2>
 
 <p>If you find a bug in this gem, please report it on <a href="https://github.com/triAGENS/guacamole/issues">our tracker</a>. We use <a href="https://waffle.io/triagens/guacamole">Waffle.io</a> to manage the tickets – go there to see the current status of the ticket. If you have a question, just contact us via the <a href="https://groups.google.com/forum/?fromgroups#!forum/ashikawa">mailing list</a> – we are happy to help you <img class="emoji" title=":smile:" alt=":smile:" src="https://github.global.ssl.fastly.net/images/icons/emoji/smile.png" height="20" width="20" align="absmiddle"></p>
@@ -191,15 +461,6 @@
       </section>
     </div>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Guacamole maintained by <a href="https://github.com/triAGENS">triAGENS</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
     
-
   </body>
 </html>
