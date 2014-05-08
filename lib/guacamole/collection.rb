@@ -15,6 +15,38 @@ module Guacamole
   # Including `Guacamole::Collection` will add a number of class methods to
   # the collection. See the `ClassMethods` submodule for details
   module Collection
+
+
+    class AQLBuilder
+      class << self
+        def create_aql(model_class, collection, aql_fragment)
+
+          builder = new(model_class, collection)
+          aql = builder.build_aql_with(aql_fragment)
+          Guacamole.logger.debug "[AQL] #{aql}"
+          aql
+        end
+      end
+
+      def initialize(model_class, collection)
+        @model_class = model_class
+        @collection  = collection
+      end
+
+      def build_aql_with(fragment)
+        "FOR #{model_name} IN #{collection_name} #{fragment} RETURN #{model_name}"
+      end
+
+      def model_name
+        @model_class.name.demodulize.underscore
+      end
+
+      def collection_name
+        @collection.collection_name
+      end
+    end
+
+
     extend ActiveSupport::Concern
     # The class methods added to the class via the mixin
     #
@@ -204,6 +236,13 @@ module Guacamole
       def by_example(example)
         query = all
         query.example = example
+        query
+      end
+
+      def by_aql(aql_fragment, bind_vars = {})
+        query           = all
+        query.aql       = AQLBuilder.create_aql(model_class, self, aql_fragment)
+        query.bind_vars = bind_vars
         query
       end
 

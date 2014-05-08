@@ -8,6 +8,9 @@ require 'yaml'
 
 require 'guacamole/document_model_mapper'
 
+# Currently Ashikawa doesn't support bind_vars ...
+Ashikawa::Core::Query::ALLOWED_KEYS_FOR_PATH["cursor"] << :bind_vars
+
 module Guacamole
   class << self
     # Configure Guacamole
