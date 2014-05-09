@@ -126,4 +126,21 @@ describe Guacamole::Configuration do
       subject.load 'config_file.yml'
     end
   end
+
+  describe 'aql_support' do
+    let(:fresh_config) { Guacamole::Configuration.new }
+
+    after do
+      subject.aql_support = false
+    end
+
+    it 'should default to "false"' do
+      expect(fresh_config.aql_support).to be_false
+    end
+
+    it 'should accept :experimental as option' do
+      subject.aql_support = :experimental
+      expect(subject.aql_support).to eq :experimental
+    end
+  end
 end
