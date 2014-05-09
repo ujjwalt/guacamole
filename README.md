@@ -424,6 +424,22 @@ While there are a lot of open issues we would like to present you a high level o
   * An example Rails application to be used as both an acceptance test suite and a head start for Guacamole and ArangoDB
   * An AQL query builder
 
+### Experimental AQL Support
+
+If you really want to play with AQL there is an experimental feature you can activate:
+
+```ruby
+config.guacamole.aql_support = :experimental
+```
+
+After that you can perform very basic queries like this one:
+
+```ruby
+PoniesCollection.by_aql('FILTER pony.name == @name', name: 'Rainbow Dash')
+```
+
+For more information please refer to the RDoc and the code.
+
 ## Issues or Questions
 
 If you find a bug in this gem, please report it on [our tracker](https://github.com/triAGENS/guacamole/issues). We use [Waffle.io](https://waffle.io/triagens/guacamole) to manage the tickets – go there to see the current status of the ticket. If you have a question, just contact us via the [mailing list](https://groups.google.com/forum/?fromgroups#!forum/ashikawa) – we are happy to help you :smile:
