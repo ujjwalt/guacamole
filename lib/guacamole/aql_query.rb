@@ -95,7 +95,7 @@ module Guacamole
 
     # An iterator to be used if no mapping should be performed
     def iterator_without_mapping(&block)
-      -> (document) { block.call document }
+      ->(document) { block.call document }
     end
   end
 end
