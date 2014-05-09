@@ -15,6 +15,11 @@ module Guacamole
 
     config.guacamole = ::Guacamole::Configuration
 
+    # Add app/collections to autoload_paths
+    initializer 'guacamole.setup_autoload_paths', before: :set_autoload_paths do |app|
+      app.config.autoload_paths += %W(#{app.config.root}/app/collections)
+    end
+
     # We're not doing migrations (yet)
     config.send(:app_generators).orm :guacamole, migration: false
 
