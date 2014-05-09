@@ -9,13 +9,17 @@ module Guacamole
     # The associated collection
     attr_reader :collection
 
+    # The additional options
+    attr_reader :options
+
     # Create a new AqlQuery
     #
     # @param [Guacamole::Collection] collection The collection class to be used
     # @param [Class] mapper the class of the mapper to use
-    def initialize(collection, mapper)
+    def initialize(collection, mapper, options = {})
       @collection = collection
       super(collection.connection.query, mapper)
+      @options = default_options.merge(options)
     end
 
     # Set the bind parameters
@@ -37,9 +41,33 @@ module Guacamole
     #
     # @return [String] An AQL string ready to be send to Arango
     def aql_string
-      aql_string = "FOR #{model_name} IN #{collection_name} #{aql_fragment} RETURN #{model_name}"
+      aql_string = "FOR #{model_name} IN #{collection_name} #{aql_fragment} #{return_as}"
       Guacamole.logger.debug "[AQL] #{aql_string} | bind_parameters: #{bind_parameters}"
       aql_string
+    end
+
+    # The RETURN part of the query
+    #
+    # @return [String] Either the default `RETURN model_name` or a custom string
+    def return_as
+      options[:return_as]
+    end
+
+    # Should the mapping step be perfomed? If set to false we will return the raw document.
+    #
+    # @return [Boolean] Either if the mapping should be perfomed or not
+    def perform_mapping?
+      options[:mapping]
+    end
+
+    # The default options to be set for the query
+    #
+    # @return [Hash] The default options
+    def default_options
+      {
+        return_as: "RETURN #{model_name}",
+        mapping:   true
+      }
     end
 
     private
@@ -57,8 +85,14 @@ module Guacamole
     # Executes an AQL query with bind parameters
     #
     # @see Query#perfom_query
-    def perfom_query(iterator)
+    def perfom_query(iterator_with_mapping, &block)
+      iterator = perform_mapping? ? iterator_with_mapping : iterator_without_mapping(&block)
       connection.execute(aql_string, options).each(&iterator)
+    end
+
+    # An iterator to be used if no mapping should be performed
+    def iterator_without_mapping(&block)
+      -> (document) { block.call document }
     end
   end
 end
