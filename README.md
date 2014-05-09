@@ -426,7 +426,7 @@ While there are a lot of open issues we would like to present you a high level o
 
 ### Experimental AQL Support
 
-If you really want to play with AQL there is an experimental feature you can activate:
+As mentioned before we're working on [something more sophisticated to support AQL](https://github.com/moonglum/brazil/issues/8). But this will not be finished any time soon. Meanwhile you could play with the experimental AQL support:
 
 ```ruby
 config.guacamole.aql_support = :experimental
@@ -438,7 +438,9 @@ After that you can perform very basic queries like this one:
 PoniesCollection.by_aql('FILTER pony.name == @name', name: 'Rainbow Dash')
 ```
 
-For more information please refer to the RDoc and the code.
+**Note**: Please use only this form to pass parameters into a query. Using string interpolation will leave you vulnerable to AQL-injections.
+
+For more information about usage please refer to the RDoc and the code.
 
 ## Issues or Questions
 
