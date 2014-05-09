@@ -223,7 +223,9 @@ module Guacamole
       # @param [String] aql_fragment An AQL string that will will be put between the
       #                 `FOR x IN coll` and the `RETURN x` part.
       # @param [Hash<Symbol, String>] bind_parameters The parameters to be passed into the query
-      # @param [Hash] options Additional options like `:mapping` and `:return_as`
+      # @param [Hash] options Additional options for the query execution
+      # @option options [String] :return_as ('RETURN #{model_name}') A custom `RETURN` statement
+      # @option options [Boolean] :mapping (true) Should the mapping be performed?
       # @return [Query]
       # @raise [AQLNotSupportedError] If `aql_support` was not activated
       # @note Please use always bind parameters since they provide at least some form

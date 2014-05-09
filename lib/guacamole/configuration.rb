@@ -83,6 +83,9 @@ module Guacamole
         configuration.logger ||= (rails_logger || default_logger)
       end
 
+      # The configured AQL support
+      #
+      # @return [Symbol, Boolean] The configured AQL support. Defaults to `false`.
       def aql_support
         configuration.aql_support || false
       end
@@ -178,6 +181,9 @@ module Guacamole
       end
     end
 
+    # Sets the AQL support
+    #
+    # @param [Symbol, Boolean] support Either `false` or `:experimental`
     def aql_support=(support)
       @aql_support = if support == :experimental
         # Currently Ashikawa doesn't support bind_vars ...
