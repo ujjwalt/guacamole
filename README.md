@@ -73,9 +73,9 @@ Now where everything is set up we can go ahead and create our application's logi
 
 One of the key features of Guacamole is the implementation of the [Data Mapper Pattern](http://martinfowler.com/eaaCatalog/dataMapper.html). This brings a lot of good things along, like
 
-  * Improved testability
-  * Separation of Concerns and
-  * Easier to support database features like embedded objects
+  * improved testability
+  * separation of concerns and
+  * easier to support database features like embedded objects
 
 The gist of the pattern is you have two classes where you would have one when you use ActiveRecord: A `Collection` and a `Model`. The `Collection` is responsible for getting data from and writing data to the database. The `Model` represents the domain logic (i.e. attributes) and has no idea what a database is. Due to this you could far easier test the domain logic without a database dependency. But you have always two (or more) classes around. The following will introduce you to both those classes.
 
@@ -109,7 +109,7 @@ class Pony
 end
 ```
 
-For further reference what is possible please refer to the [Virtus documentation](http://rubydoc.info/gems/virtus/1.0.2/frames). One thing to add here, whenever you assign a value to an attribute Virtus will perform a type coercion:
+For further reference what is possible please refer to the [Virtus documentation](http://rubydoc.info/gems/virtus/1.0.2/frames). One thing to note here: Whenever you assign a value to an attribute Virtus will perform a type coercion:
 
 ```ruby
 pinkie_pie = Pony.new
@@ -121,7 +121,7 @@ pinkie_pie.type  = "Earthpony"
 
 #### Timestamps
 
-We will automatically add time stamp columns to all models when you include `Guacamole::Model`. We eventually will make this configurable, but for now it is not.
+We will automatically add both a `created_at` and an `updated_at` attribute to all your models. Both will hold a `DateTime` and will be populated on creating or updating the model in the database.
 
 #### The ID of a model
 
@@ -254,10 +254,19 @@ Without any configuration we will just map the attributes present in your domain
 }
 ```
 
-When we receive this document and map it against the above mentioned model there won't be a `occupation` attribute:
+When we receive this document and map it against the `Pony` model there won't be a `occupation` attribute:
 
 ```ruby
+class Pony
+  include Guacamole::Model
+
+  attribute :name, String
+  attribute :color, String
+end
+
 pony = PoniesCollection.by_key "303"
+pony.color
+# => 'green'
 pony.occupation
 # => NoMethodError: undefined method `occupation' for #<Pony:0x00000105fc77f8>
 ```
