@@ -15,7 +15,10 @@ module Guacamole
     # Create a new AqlQuery
     #
     # @param [Guacamole::Collection] collection The collection class to be used
-    # @param [Class] mapper the class of the mapper to use
+    # @param [Class] mapper The class of the mapper to use
+    # @param [Hash] options Additional options for query execution
+    # @option options [String] :return_as ('RETURN #{model_name}') A custom `RETURN` statement
+    # @option options [Boolean] :mapping (true) Should the mapping be performed?
     def initialize(collection, mapper, options = {})
       @collection = collection
       super(collection.connection.query, mapper)
