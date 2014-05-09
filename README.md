@@ -19,7 +19,7 @@ For a high-level introduction you can also refer to [this presentation](https://
 
 ## Getting started (with a fresh Rails application)
 
-Since Guacamole is in an alpha state we suggest you create a new Rails application to play around with it. We don't recommend adding it to a production application.
+Since Guacamole is in an alpha state we suggest you to create a new Rails application to play around with it. We don't recommend adding it to a production application.
 
 First of all create your shiny new application, without ActiveRecord of course:
 
@@ -71,11 +71,11 @@ Now where everything is set up we can go ahead and create our application's logi
 
 ## Usage
 
-One of the key features of Guacamole is the implementation of the [Data Mapper Patter](http://martinfowler.com/eaaCatalog/dataMapper.html). This brings a lot of good things along, like
+One of the key features of Guacamole is the implementation of the [Data Mapper Pattern](http://martinfowler.com/eaaCatalog/dataMapper.html). This brings a lot of good things along, like
 
   * Improved testability
-  * Separation of Concern and
-  * Easier to support database features like embedded objects
+  * Separation of Concerns and
+  * Easier to support database features like embedded objects
 
 The gist of the pattern is you have two classes where you would have one when you use ActiveRecord: A `Collection` and a `Model`. The `Collection` is responsible for getting data from and writing data to the database. The `Model` represents the domain logic (i.e. attributes) and has no idea what a database is. Due to this you could far easier test the domain logic without a database dependency. But you have always two (or more) classes around. The following will introduce you to both those classes.
 
@@ -99,7 +99,7 @@ class Pony
 end
 ```
 
-Since the database doesn't know anything about a schema we must define the attributes in the model class itself. At the same time this has the advantage to open the model class and see what attributes it has. An attribute is defined with the `attribute` class method. We use [Virtus](https://github.com/solnic/virtus) for this purpose. Basically you add give the attribute a name and a type. The type have to be the actual class and **not** a string representation of the class. You could even define collection classes:
+Since the database doesn't know anything about a schema we must define the attributes in the model class itself. At the same time this has the advantage to open the model class and see what attributes it has. An attribute is defined with the `attribute` class method. We use [Virtus](https://github.com/solnic/virtus) for this purpose. Basically you give the attribute a name and a type. The type have to be the actual class and **not** a string representation of the class. You could even define collection classes:
 
 ```ruby
 class Pony
@@ -125,7 +125,7 @@ We will automatically add time stamp columns to all models when you include `Gua
 
 #### The ID of a model
 
-In ArangoDB a document has three internal fields: `_id`, `_key` and `_rev`. For a detailed explanation how these three work together please refer to the [ArangoDB documentation](https://www.arangodb.org/manuals/2/HandlingDocuments.html#HandlingDocumentsIntro). Within Guacamole we will always you the `_key` because it is enough the identify any document within a collection. Both the `_key` and `_rev` attribute are available through the `Guacamole::Model#key` and `Guacamole::Model#rev` attribute. You don't have to do anything for this, we will take care of this for you.
+In ArangoDB a document has three internal fields: `_id`, `_key` and `_rev`. For a detailed explanation how these three work together please refer to the [ArangoDB documentation](https://www.arangodb.org/manuals/2/HandlingDocuments.html#HandlingDocumentsIntro). Within Guacamole we will always use the `_key` because it is enough the identify any document within a collection. Both the `_key` and `_rev` attribute are available through the `Guacamole::Model#key` and `Guacamole::Model#rev` attribute. You don't have to do anything for this, we will take care of this for you.
 
 Additionally you will find an `id` method on you models. This is just an alias for `key`. This was added for `ActiveModel::Conversion` compliance. You **should always** use `key`.
 
@@ -175,7 +175,7 @@ Currently your options what you can do with a collection are quire limited. We w
   * Mapping embedded models
   * Realizing basic associations
 
-For all the mapping related parts you don't have any configuration options yet, but have to stick with the conventions. Obviously this will change in the future but for now there more important parts to work on. Before we dig deeper into the mapping of embedded or associated models let us look at the CRUD functionality.
+For all the mapping related parts you don't have any configuration options yet, but have to stick with the conventions. Obviously this will change in the future but for now there are more important parts to work on. Before we dig deeper into the mapping of embedded or associated models let us look at the CRUD functionality.
 
 #### Create models
 
@@ -235,7 +235,7 @@ We're well aware this is not sufficient for building sophisticated applications.
 
 ### Mapping
 
-As the name "Data Mapper" suggests there is some sort of mapping going on behind the scenes. The mapping relates to the process of _mapping_ documents from the database to the domain models. 
+As the name "Data Mapper" suggests there is some sort of mapping going on behind the scenes. The mapping relates to the process of _mapping_ documents from the database to the domain models.
 
 The `Collection` class will lookup the appropriate `Model` class based on its own name (i.e.: the `PoniesCollection` will look for a `Pony` class). Currently there is no option to configure this so you're stuck with our conventions (for now):
 
@@ -254,7 +254,7 @@ Without any configuration we will just map the attributes present in your domain
 }
 ```
 
-When we receive this document and map it against the above mentioned model there will be no `occupation` attribute be present:
+When we receive this document and map it against the above mentioned model there won't be a `occupation` attribute:
 
 ```ruby
 pony = PoniesCollection.by_key "303"
@@ -262,7 +262,7 @@ pony.occupation
 # => NoMethodError: undefined method `occupation' for #<Pony:0x00000105fc77f8>
 ```
 
-Currently there is not option to change the mapping of attributes. If you want to map more or less attributes you should create another model for that purpose.
+Currently there is no option to change the mapping of attributes. If you want to map more or less attributes you should create another model for that purpose.
 
 #### Associations
 
@@ -393,7 +393,7 @@ Guacamole is a very young project. A lot of stuff is missing but still, if you w
 
 Currently we're not providing any testing helper, thus you need to make sure to cleanup the database yourself before each run. You can look at the [`spec/acceptance/spec_helper.rb`](https://github.com/triAGENS/guacamole/blob/master/spec/acceptance/spec_helper.rb) of Guacamole for inspiration of how to do that.
 
-For test data generation we're using the awesome [Fabrication gem](http://www.fabricationgem.org/). Again you find some usage examples in under Guacamole's own acceptance tests. We didn't tested Factory Girl yet, but it eventually will work, too.
+For test data generation we're using the awesome [Fabrication gem](http://www.fabricationgem.org/). Again you find some usage examples in Guacamole's own acceptance tests. We didn't tested Factory Girl yet, but it eventually will work, too.
 
 ### Authentication
 
