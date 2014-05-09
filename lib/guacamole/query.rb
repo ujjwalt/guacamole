@@ -38,10 +38,10 @@ module Guacamole
     # Iterate over the result of the query
     #
     # This will execute the query you have build
-    def each
+    def each(&block)
       return to_enum(__callee__) unless block_given?
 
-      perfom_query ->(document) { yield mapper.document_to_model(document) }
+      perfom_query ->(document) { block.call mapper.document_to_model(document) }, &block
     end
 
     # Limit the results of the query
@@ -82,7 +82,7 @@ module Guacamole
     #
     # @param [Lambda] iterator To be called on each document returned from
     #                 the database
-    def perfom_query(iterator)
+    def perfom_query(iterator, &block)
       if example
         connection.by_example(example, options).each(&iterator)
       else
