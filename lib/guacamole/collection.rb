@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 
 require 'guacamole/query'
+require 'guacamole/aql_query'
 
 require 'ashikawa-core'
 require 'active_support/concern'
@@ -15,38 +16,6 @@ module Guacamole
   # Including `Guacamole::Collection` will add a number of class methods to
   # the collection. See the `ClassMethods` submodule for details
   module Collection
-
-
-    class AQLBuilder
-      class << self
-        def create_aql(model_class, collection, aql_fragment)
-
-          builder = new(model_class, collection)
-          aql = builder.build_aql_with(aql_fragment)
-          Guacamole.logger.debug "[AQL] #{aql}"
-          aql
-        end
-      end
-
-      def initialize(model_class, collection)
-        @model_class = model_class
-        @collection  = collection
-      end
-
-      def build_aql_with(fragment)
-        "FOR #{model_name} IN #{collection_name} #{fragment} RETURN #{model_name}"
-      end
-
-      def model_name
-        @model_class.name.demodulize.underscore
-      end
-
-      def collection_name
-        @collection.collection_name
-      end
-    end
-
-
     extend ActiveSupport::Concern
     # The class methods added to the class via the mixin
     #
@@ -239,10 +208,32 @@ module Guacamole
         query
       end
 
-      def by_aql(aql_fragment, bind_vars = {})
-        query           = all
-        query.aql       = AQLBuilder.create_aql(model_class, self, aql_fragment)
-        query.bind_vars = bind_vars
+      # Find models with simple AQL queries
+      #
+      # Since Simple Queries are quite limited in their possibilities you will need to
+      # use AQL for more advanced data retrieval. Currently there is only a very basic
+      # and experimental support for AQL. Eventually we will replace it with an advanced
+      # query builder DSL. Due to this, we deactivated this feature per default. You
+      # need to activate it with {Configuration#aql_support}:
+      #
+      #   Guacamole::Configuration.aql_support = :experimental
+      #
+      # If not activated it we will raise an error.
+      #
+      # @param [String] aql_fragment An AQL string that will will be put between the
+      #                 `FOR x IN coll` and the `RETURN x` part.
+      # @param [Hash<Symbol, String>] bind_parameters The parameters to be passed into the query
+      # @return [Query]
+      # @raise [AQLNotSupportedError] If `aql_support` was not activated
+      # @note Please use always bind parameters since they provide at least some form
+      #       of protection from AQL injection.
+      # @see https://www.arangodb.org/manuals/2/Aql.html AQL Documentation
+      def by_aql(aql_fragment, bind_parameters = {})
+        raise AQLNotSupportedError unless Guacamole.configuration.aql_support == :experimental
+
+        query                 = AqlQuery.new(self, mapper)
+        query.aql_fragment    = aql_fragment
+        query.bind_parameters = bind_parameters
         query
       end
 

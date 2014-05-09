@@ -3,6 +3,7 @@
 require 'active_support/core_ext'
 
 require 'guacamole/version'
+require 'guacamole/exceptions'
 require 'guacamole/configuration'
 require 'guacamole/model'
 require 'guacamole/collection'
