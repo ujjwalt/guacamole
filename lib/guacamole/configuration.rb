@@ -8,9 +8,6 @@ require 'yaml'
 
 require 'guacamole/document_model_mapper'
 
-# Currently Ashikawa doesn't support bind_vars ...
-Ashikawa::Core::Query::ALLOWED_KEYS_FOR_PATH["cursor"] << :bind_vars
-
 module Guacamole
   class << self
     # Configure Guacamole
@@ -71,12 +68,12 @@ module Guacamole
   #   @return [Object] current environment
   class Configuration
     # @!visibility protected
-    attr_accessor :database, :default_mapper, :logger
+    attr_accessor :database, :default_mapper, :logger, :aql_support
 
     class << self
       extend Forwardable
 
-      def_delegators :configuration, :database, :database=, :default_mapper=, :logger=
+      def_delegators :configuration, :database, :database=, :default_mapper=, :logger=, :aql_support=
 
       def default_mapper
         configuration.default_mapper || (self.default_mapper = Guacamole::DocumentModelMapper)
@@ -84,6 +81,10 @@ module Guacamole
 
       def logger
         configuration.logger ||= (rails_logger || default_logger)
+      end
+
+      def aql_support
+        configuration.aql_support || false
       end
 
       # Load a YAML configuration file to configure Guacamole
@@ -174,6 +175,16 @@ module Guacamole
             collections.each { |collection| collection.truncate! }
           end
         end
+      end
+    end
+
+    def aql_support=(support)
+      @aql_support = if support == :experimental
+        # Currently Ashikawa doesn't support bind_vars ...
+        Ashikawa::Core::Query::ALLOWED_KEYS_FOR_PATH['cursor'] |= [:bind_vars]
+        :experimental
+      else
+        false
       end
     end
   end
