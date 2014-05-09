@@ -25,22 +25,6 @@ module Guacamole
     # @api private
     attr_accessor :options
 
-    attr_accessor :aql
-
-    def bind_vars=(bind_vars)
-      @options[:bind_vars] = bind_vars
-    end
-
-    def bind_vars
-      @options[:bind_vars]
-    end
-
-    def query_type
-      return :example if example.present?
-      return :aql     if aql.present?
-      nil
-    end
-
     # Create a new Query
     #
     # @param [Ashikawa::Core::Collection] connection The collection to use to talk to the database
@@ -57,16 +41,7 @@ module Guacamole
     def each
       return to_enum(__callee__) unless block_given?
 
-      iterator = ->(document) { yield mapper.document_to_model(document) }
-
-      case query_type
-      when :example
-        connection.by_example(example, options).each(&iterator)
-      when :aql
-        connection.execute(aql, options).each(&iterator)
-      else
-        connection.all(options).each(&iterator)
-      end
+      perfom_query ->(document) { yield mapper.document_to_model(document) }
     end
 
     # Limit the results of the query
@@ -97,5 +72,22 @@ module Guacamole
         example == other.example
     end
     alias_method :eql?, :==
+
+    private
+
+    # Performs the query against the database connection.
+    #
+    # This can be changed by subclasses to implement other types
+    # of queries, such as AQL queries.
+    #
+    # @param [Lambda] iterator To be called on each document returned from
+    #                 the database
+    def perfom_query(iterator)
+      if example
+        connection.by_example(example, options).each(&iterator)
+      else
+        connection.all(options).each(&iterator)
+      end
+    end
   end
 end

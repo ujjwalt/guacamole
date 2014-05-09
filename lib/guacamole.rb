@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 
 require 'guacamole/version'
+require 'guacamole/exceptions'
 require 'guacamole/configuration'
 require 'guacamole/model'
 require 'guacamole/collection'
