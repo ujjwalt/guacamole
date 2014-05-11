@@ -22,7 +22,6 @@ DuplicateMethodCall:
   exclude:
   - Guacamole::DocumentModelMapper#document_to_model
   - Guacamole::DocumentModelMapper#model_to_document
-  - Guacamole::Configuration#_add_missing_methods_to_database
   max_calls: 1
   allow_calls: []
 FeatureEnvy:
@@ -45,8 +44,7 @@ LongYieldList:
   max_params: 2
 NestedIterators:
   enabled: true
-  exclude:
-  - Guacamole::Configuration#_add_missing_methods_to_database
+  exclude: []
   max_allowed_nesting: 2
   ignore_iterators: []
 NilCheck:
@@ -73,8 +71,6 @@ TooManyStatements:
   - Guacamole::DocumentModelMapper#model_to_document
   - Guacamole::Collection::ClassMethods#create_document_from
   - Guacamole::Collection::ClassMethods#create_referenced_by_models_of
-  - Guacamole::Configuration#_add_missing_methods_to_database
-  - Guacamole::Configuration#create_database_connection_from
   max_statements: 5
 UncommunicativeMethodName:
   enabled: true
