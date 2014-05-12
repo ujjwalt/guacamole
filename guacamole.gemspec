@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['moonglum@moonbeamlabs.com', 'dirk.breuer@gmail.com']
   spec.description   = %q{ODM for ArangoDB}
   spec.summary       = %q{An ODM for ArangoDB that uses the DataMapper pattern.}
-  spec.homepage      = 'https://github.com/triAGENS/guacamole'
+  spec.homepage      = 'http://guacamolegem.org'
   spec.license       = 'Apache License 2.0'
 
   spec.files         = `git ls-files`.split($/)
