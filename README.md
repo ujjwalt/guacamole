@@ -11,7 +11,7 @@ Guacamole is an Object Document Mapper (ODM) for the multi-model NoSQL database 
   * Reflect the nature of NoSQL in general and ArangoDB in particular
   * Focus on long-term maintainability of your application
 
-While the first two points don't need any further explanation we want to lay out the motivation behind the last point: 'Ease of use' is very important to us, but we made some fundamental decisions which will cause a stepper learning curve than other libraries, notably ActiveRecord. If you have a traditional Rails background you will find some things quite different. We decided to go this direction, because we think it better suites the features of ArangoDB. Applying the semantics of a different environment maybe helps with the first steps but will become problematic if you further advance in your understanding of the possibilities.
+While the first two points don't need any further explanation we want to lay out the motivation behind the last point: 'Ease of use' is very important to us, but we made some fundamental decisions which will cause a steeper learning curve than other libraries, notably ActiveRecord. If you have a traditional Rails background you will find some things quite different. We decided to go this direction, because we think it better suites the features of ArangoDB. Applying the semantics of a different environment may help with the first steps but will become problematic if you further advance in your understanding of the possibilities.
 
 That said we still think we provide a sufficient API that is quite easy to get hold of. It is just a bit different from what you were doing with ActiveRecord.
 
