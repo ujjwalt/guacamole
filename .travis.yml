@@ -11,7 +11,7 @@ rvm:
   - rbx-19mode
   - ruby-head
 env:
-  - ARANGODB_DISABLE_AUTHENTIFICATION=true VERSION=1.4.0-beta2
+  - ARANGODB_DISABLE_AUTHENTIFICATION=true VERSION=2.0
 matrix:
   allow_failures:
     - rvm: jruby-19mode
