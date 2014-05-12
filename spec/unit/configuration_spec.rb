@@ -127,20 +127,20 @@ describe Guacamole::Configuration do
     end
   end
 
-  describe 'aql_support' do
+  describe 'experimental_features' do
     let(:fresh_config) { Guacamole::Configuration.new }
 
     after do
-      subject.aql_support = false
+      subject.experimental_features = []
     end
 
-    it 'should default to "false"' do
-      expect(fresh_config.aql_support).to be_false
+    it 'should default to none' do
+      expect(fresh_config.experimental_features).to be_empty
     end
 
-    it 'should accept :experimental as option' do
-      subject.aql_support = :experimental
-      expect(subject.aql_support).to eq :experimental
+    it 'should accept a list of features to activate' do
+      subject.experimental_features = [:aql_support]
+      expect(subject.experimental_features).to include :aql_support
     end
   end
 end

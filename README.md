@@ -429,7 +429,7 @@ While there are a lot of open issues we would like to present you a high level o
 As mentioned before we're working on [something more sophisticated to support AQL](https://github.com/moonglum/brazil/issues/8). But this will not be finished any time soon. Meanwhile you could play with the experimental AQL support:
 
 ```ruby
-config.guacamole.aql_support = :experimental
+config.guacamole.experimental_features = [:aql_support]
 ```
 
 After that you can perform very basic queries like this one:

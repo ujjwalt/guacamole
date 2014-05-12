@@ -233,7 +233,7 @@ module Guacamole
       #       of protection from AQL injection.
       # @see https://www.arangodb.org/manuals/2/Aql.html AQL Documentation
       def by_aql(aql_fragment, bind_parameters = {}, options = {})
-        raise AQLNotSupportedError unless Guacamole.configuration.aql_support == :experimental
+        raise AQLNotSupportedError unless Guacamole.configuration.experimental_features.include?(:aql_support)
 
         query                 = AqlQuery.new(self, mapper, options)
         query.aql_fragment    = aql_fragment

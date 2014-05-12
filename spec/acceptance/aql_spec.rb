@@ -24,7 +24,7 @@ describe 'BasicAQLSupport' do
 
   context 'with experimental AQL support enabled' do
     before do
-      Guacamole.configuration.aql_support = :experimental
+      Guacamole.configuration.experimental_features = [:aql_support]
 
       [pegasus_pony, earth_pony, unicorn_pegasus_pony]
     end
@@ -59,7 +59,7 @@ describe 'BasicAQLSupport' do
 
   context 'without experimental AQL support enabled' do
     before do
-      Guacamole.configuration.aql_support = false
+      Guacamole.configuration.experimental_features = []
     end
 
     it 'should raise an error accessing the AQL feature' do
