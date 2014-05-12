@@ -1,7 +1,8 @@
 # -*- encoding : utf-8 -*-
+
+require 'active_support'
 require 'active_support/concern'
-# Cherry Pick not possible
-require 'active_model'
+require 'active_model' # Cherry Pick not possible
 require 'virtus'
 
 module Guacamole
