@@ -3,6 +3,7 @@
 require 'logger'
 require 'forwardable'
 require 'ashikawa-core'
+require 'active_support'
 require 'active_support/core_ext'
 require 'yaml'
 
