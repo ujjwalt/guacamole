@@ -33,7 +33,8 @@ IrresponsibleModule:
   - - !ruby/regexp /Generators/
 LongParameterList:
   enabled: true
-  exclude: []
+  exclude:
+  - Guacamole::Collection::ClassMethods#by_aql
   max_params: 2
   overrides:
     initialize:
@@ -62,7 +63,7 @@ TooManyInstanceVariables:
 TooManyMethods:
   enabled: true
   exclude: []
-  max_methods: 10
+  max_methods: 20
 TooManyStatements:
   enabled: true
   exclude:

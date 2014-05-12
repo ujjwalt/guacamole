@@ -4,7 +4,6 @@ module Guacamole
   # Build a query for ArangoDB
   class Query
     include Enumerable
-
     # Connection to the database
     #
     # @return [Ashikawa::Core::Collection]
@@ -39,16 +38,10 @@ module Guacamole
     # Iterate over the result of the query
     #
     # This will execute the query you have build
-    def each
+    def each(&block)
       return to_enum(__callee__) unless block_given?
 
-      iterator = ->(document) { yield mapper.document_to_model(document) }
-
-      if example
-        connection.by_example(example, options).each(&iterator)
-      else
-        connection.all(options).each(&iterator)
-      end
+      perfom_query ->(document) { block.call mapper.document_to_model(document) }, &block
     end
 
     # Limit the results of the query
@@ -79,5 +72,22 @@ module Guacamole
         example == other.example
     end
     alias_method :eql?, :==
+
+    private
+
+    # Performs the query against the database connection.
+    #
+    # This can be changed by subclasses to implement other types
+    # of queries, such as AQL queries.
+    #
+    # @param [Lambda] iterator To be called on each document returned from
+    #                 the database
+    def perfom_query(iterator, &block)
+      if example
+        connection.by_example(example, options).each(&iterator)
+      else
+        connection.all(options).each(&iterator)
+      end
+    end
   end
 end
