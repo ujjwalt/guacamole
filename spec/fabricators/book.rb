@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 class Book
-  include Guacamole::Model
+  extend ActiveSupport::Autoload
   include Guacamole::Model
 
   autoload :Author, 'fabricators/author'

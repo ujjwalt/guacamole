@@ -3,6 +3,7 @@
 require 'guacamole/query'
 
 require 'ashikawa-core'
+require 'active_support'
 require 'active_support/concern'
 require 'active_support/core_ext/string/inflections'
 

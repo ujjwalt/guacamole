@@ -1,10 +1,10 @@
 # -*- encoding : utf-8 -*-
 
+require 'active_support'
+require 'active_support/core_ext'
 require 'logger'
 require 'forwardable'
 require 'ashikawa-core'
-require 'active_support'
-require 'active_support/core_ext'
 require 'yaml'
 
 require 'guacamole/document_model_mapper'
