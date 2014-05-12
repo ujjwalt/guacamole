@@ -105,16 +105,12 @@ module Guacamole
       end
 
       def create_database_connection_from(config)
-        database = Ashikawa::Core::Database.new do |arango_config|
+        Ashikawa::Core::Database.new do |arango_config|
           arango_config.url      = db_url_from(config)
           arango_config.username = config['username']
           arango_config.password = config['password']
           arango_config.logger   = logger
         end
-
-        _add_missing_methods_to_database(database)
-
-        database
       end
 
       def db_url_from(config)
@@ -129,49 +125,6 @@ module Guacamole
         default_logger       = Logger.new(STDOUT)
         default_logger.level = Logger::INFO
         default_logger
-      end
-
-      # FIXME: This is not here to stay! Kill it with fire!
-      #
-      # As soon Ashikawa::Core provides those features
-      # (https://github.com/triAGENS/ashikawa-core/issues/83) immediately
-      # remove this hack. But while this is ugly as hell it ensures we don't
-      # need to change any other related code. Just remove this and we're good.
-      def _add_missing_methods_to_database(database)
-        database.singleton_class.instance_eval do
-          # The raw Faraday connection
-          define_method(:raw_connection) do
-            @connection.connection
-          end
-
-          # The base URI to the ArangoDB server
-          define_method(:arangodb_uri) do |additional_path = ''|
-            uri = raw_connection.url_prefix
-            base_uri = [uri.scheme, '://', uri.host, ':', uri.port].join
-            URI.join(base_uri, additional_path)
-          end
-
-          # Database name query method
-          define_method(:name) do
-            database_regexp = %r{_db/(?<db_name>\w+)/_api}
-            raw_connection.url_prefix.to_s.match(database_regexp)['db_name']
-          end
-
-          # Creates the database
-          define_method(:create) do
-            raw_connection.post(arangodb_uri('/_api/database'), name: name)
-          end
-
-          # Drops the database
-          define_method(:drop) do
-            raw_connection.delete(arangodb_uri("/_api/database/#{name}"))
-          end
-
-          # Truncate the database
-          define_method(:truncate) do
-            collections.each { |collection| collection.truncate! }
-          end
-        end
       end
     end
   end
