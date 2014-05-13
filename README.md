@@ -154,7 +154,7 @@ As the model doesn't know anything about the database you cannot define database
 
 ### Collections
 
-Collections are your gateway to the database. They persist your models and offer querying for them. They will translate the raw data from the database to your domain models and vice versa. By convention they are the pluralized version of the model with the suffix `Collection`. So given the model from above, this could be the according collection:
+Collections are your gateway to the database. They persist your models and offer querying for them. They will translate the raw data from the database to your domain models and vice versa. By convention they are the pluralized version of the model with the suffix `Collection`. So given the model from above, this could be the following collection:
 
 ```ruby
 class PoniesCollection
@@ -309,13 +309,13 @@ As you can see, from the model perspective there is nothing special about an emb
 
 ```json
 {
-  "_id": [...],
-  "_rev": [...],
-  "_key": [...],
+  "_id": "...",
+  "_rev": "...",
+  "_key": "...",
   "title": "The grand blog post",
   "body": "Lorem ipsum [...]",
   "create_at": "2014-05-03T16:55:43+02:00",
-  "updated_at": "2014-05-03T16:55:43+02:00"
+  "updated_at": "2014-05-03T16:55:43+02:00",
   "comments": [
     {
       "text": "This was really a grand blog post",
@@ -328,6 +328,7 @@ As you can see, from the model perspective there is nothing special about an emb
       "updated_at": "2014-05-04T16:55:43+02:00"
     }
   ]
+}
 ```
 
 **Note**: Again this will only work if you stick with the convention. So far there is no support to configure this more fine grained.
@@ -371,7 +372,7 @@ class PostsCollection
   include Guacamole::Collection
 
   map do
-    references :user
+    references :author
   end
 end
 ```
@@ -402,17 +403,17 @@ Guacamole is a very young project. A lot of stuff is missing but still, if you w
 
 Currently we're not providing any testing helper, thus you need to make sure to cleanup the database yourself before each run. You can look at the [`spec/acceptance/spec_helper.rb`](https://github.com/triAGENS/guacamole/blob/master/spec/acceptance/spec_helper.rb) of Guacamole for inspiration of how to do that.
 
-For test data generation we're using the awesome [Fabrication gem](http://www.fabricationgem.org/). Again you find some usage examples in Guacamole's own acceptance tests. We didn't tested Factory Girl yet, but it eventually will work, too.
+For test data generation we're using the awesome [Fabrication gem](http://www.fabricationgem.org/). Again you find some usage examples in Guacamole's own acceptance tests. We haven't tested Factory Girl yet but it eventually will work too.
 
 ### Authentication
 
-Any integration into an authentication framework need to be done by you. At this time we have nothing to share with you about this topic.
+Any integration into an authentication framework needs to be done by you. At this time we have nothing to share with you about this topic.
 
 ### Forms
 
-While we not tested them they should probably work due to the ActiveModel compliance. But again, this not confirmed and you need to try it out by yourself.
+While we haven't tested them, they should probably work due to the ActiveModel compliance. But again, this is not confirmed and you need to try it out yourself.
 
-If you give Guacamole a try, please feel free to ask us any question or give us feedback to anything on your mind. This is really crucial for us and we would be more than happy to hear back from you.
+If you give Guacamole a try, please feel free to ask us any question or give us feedback about anything on your mind. This is really crucial for us and we would be more than happy to hear back from you.
 
 ## Todos
 
