@@ -61,11 +61,4 @@ RSpec.configure do |config|
   config.before(:each) do
     Guacamole.configuration.database.collections.each { |collection| collection.truncate! }
   end
-
-  config.before(:all) do
-    Guacamole.configuration.database.collections.each do |collection|
-      # Clear all indices
-      collection.indices.map { |index| index.delete unless index.type == :primary }
-    end
-  end
 end
