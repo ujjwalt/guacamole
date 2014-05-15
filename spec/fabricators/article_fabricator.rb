@@ -2,7 +2,7 @@
 
 Fabricator(:article) do
   title 'And then there was silence'
-  unique_attribute { sequence(:unique_attribute) { |i| "unique attribute #{i}"} }
+  unique_attribute { sequence(:unique_attribute) { |i| "unique attribute #{i}" } }
 end
 
 Fabricator(:article_with_two_comments, from: Article) do

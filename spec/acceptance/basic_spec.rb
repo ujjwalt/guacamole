@@ -128,17 +128,16 @@ describe 'CollectionBasics' do
       end
     end
 
-    describe "ensure_hash_index" do
-      it "should create a hash index on attributes listed" do
+    describe 'ensure_hash_index' do
+      it 'should create a hash index on attributes listed' do
         new_index = subject.ensure_hash_index on: :unique_attribute, unique: true
         index_id = new_index.id.split('/').last.to_i # Shouldn't this be simpler?
         expect(subject.connection.index(index_id)).to eq new_index
       end
 
-      it "does not allow two documents with the same unique attribute" do
+      it 'does not allow two documents with the same unique attribute' do
         first_document = Fabricate(:article)
         second_document = Fabricate.build(:article, unique_attribute: first_document.unique_attribute)
-        
         expect(first_document.unique_attribute).to eq second_document.unique_attribute
         expect { subject.save(second_document) }.to raise_error(Ashikawa::Core::ClientError)
       end
