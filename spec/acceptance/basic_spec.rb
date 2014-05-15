@@ -13,12 +13,15 @@ class Article
 
   attribute :title, String
   attribute :comments, Array[Comment]
+  attribute :unique_attribute, String
 
   validates :title, presence: true
 end
 
 class ArticlesCollection
   include Guacamole::Collection
+
+  ensure_hash_index on: :unique_attribute, unique: true
 
   map do
     embeds :comments
@@ -122,6 +125,22 @@ describe 'CollectionBasics' do
         subject.all.each do |article|
           expect(article.object_id).to eq subject.by_key(article.key).object_id
         end
+      end
+    end
+
+    describe "ensure_hash_index" do
+      it "should create a hash index on attributes listed" do
+        new_index = subject.ensure_hash_index on: :unique_attribute, unique: true
+        index_id = new_index.id.split('/').last.to_i # Shouldn't this be simpler?
+        expect(subject.connection.index(index_id)).to eq new_index
+      end
+
+      it "does not allow two documents with the same unique attribute" do
+        first_document = Fabricate(:article)
+        second_document = Fabricate.build(:article, unique_attribute: first_document.unique_attribute)
+        
+        expect(first_document.unique_attribute).to eq second_document.unique_attribute
+        expect { subject.save(second_document) }.to raise_error(Ashikawa::Core::ClientError)
       end
     end
   end

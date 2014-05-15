@@ -321,6 +321,7 @@ module Guacamole
       # @option opts [Array[Symbol]] :on The attributes to index on
       # @option opts [Boolean] :unique wether the hash index is unique or not
       def ensure_hash_index(opts)
+        opts[:on] = [opts[:on]] unless opts[:on].is_a? Array
         connection.add_index :hash, opts
       end
     end
