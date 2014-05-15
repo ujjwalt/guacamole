@@ -624,4 +624,18 @@ describe Guacamole::Collection do
       end
     end
   end
+
+  describe 'ensure_hash_index' do
+    let(:mock_connection) { double('Connection') }
+    let(:mock_index) { double('Index') }
+
+    before { subject.connection = mock_connection }
+
+    it 'creates a hash index on the given attributes' do
+      params = { on: 'attribute1' }
+      allow(subject.connection).to receive(:add_index).with(:hash, params).and_return(mock_index)
+
+      expect(subject.ensure_hash_index(params)).to eq mock_index
+    end
+  end
 end
