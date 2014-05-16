@@ -21,7 +21,7 @@ end
 class ArticlesCollection
   include Guacamole::Collection
 
-  ensure_hash_index on: :unique_attribute, unique: true
+  index :hash, on: :unique_attribute, unique: true
 
   map do
     embeds :comments
@@ -130,7 +130,7 @@ describe 'CollectionBasics' do
 
     describe 'ensure_hash_index' do
       it 'should create a hash index on attributes listed' do
-        new_index = subject.ensure_hash_index on: :unique_attribute, unique: true
+        new_index = subject.index :hash, on: :unique_attribute, unique: true
         index_id = new_index.id.split('/').last.to_i # Shouldn't this be simpler?
         expect(subject.connection.index(index_id)).to eq new_index
       end

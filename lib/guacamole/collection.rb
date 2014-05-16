@@ -314,16 +314,16 @@ module Guacamole
         document
       end
 
-      # Ensure a hash index on the collection on particular attributes
+      # Ensure an index on the collection on particular attributes
       #
       # This creates a hash index on the given attributes unless one exists
       #
-      # @option opts [Array[Symbol]] :on The attributes to index on
-      # @option opts [Boolean] :unique wether the hash index is unique or not
-      def ensure_hash_index(opts)
-        on = opts[:on]
-        opts[:on] = [on] unless on.is_a? Array
-        connection.add_index :hash, opts
+      # @param type [Symbol] the type of hash
+      # @option options [Array[Symbol]] :on The attributes to index on
+      # @option options [Boolean] :unique wether the hash index is unique or not
+      def index(type, options)
+        options[:on] = [options[:on]].flatten
+        connection.add_index type, options
       end
     end
   end
