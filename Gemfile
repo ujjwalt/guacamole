@@ -9,8 +9,3 @@ group :development, :test do
   gem 'guard-yard'
 end
 eval_gemfile 'Gemfile.devtools'
-
-# Local debugging
-group :debug do
-  gem 'debugger'
-end
