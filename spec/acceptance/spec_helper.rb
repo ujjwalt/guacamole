@@ -9,12 +9,6 @@ require 'faker'
 require 'logging'
 require 'ashikawa-core'
 
-begin
-  require 'debugger'
-rescue LoadError
-  puts "Debugger is not available. Maybe you're Travis."
-end
-
 # This is required to remove the deprecation warning introduced in this commit:
 # https://github.com/svenfuchs/i18n/commit/3b6e56e06fd70f6e4507996b017238505e66608c.
 I18n.config.enforce_available_locales = false
