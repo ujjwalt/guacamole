@@ -6,6 +6,7 @@ require 'logger'
 require 'forwardable'
 require 'ashikawa-core'
 require 'yaml'
+require 'erb'
 
 require 'guacamole/document_model_mapper'
 
@@ -96,7 +97,8 @@ module Guacamole
       #
       # @param [String] file_name The file name of the configuration
       def load(file_name)
-        config = YAML.load_file(file_name)[current_environment.to_s]
+        yaml_content = process_file_with_erb(file_name)
+        config       = YAML.load(yaml_content)[current_environment.to_s]
 
         self.database = create_database_connection_from(config)
         warn_if_database_was_not_yet_created
@@ -146,6 +148,10 @@ module Guacamole
         warning_msg = "[WARNING] The configured database ('#{database.name}') cannot be found. Please run `rake db:create` to create it."
         logger.warn warning_msg
         warn warning_msg
+      end
+
+      def process_file_with_erb(file_name)
+        ERB.new(File.read(file_name)).result
       end
     end
 
