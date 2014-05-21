@@ -24,7 +24,7 @@ Since Guacamole is in an alpha state we suggest you to create a new Rails applic
 First of all create your shiny new application, without ActiveRecord of course:
 
 ```shell
-rails new -O $my_awesome_app
+rails new --skip-active-record $my_awesome_app
 ```
 
 Add this line to your application's Gemfile:
