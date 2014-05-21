@@ -39,6 +39,24 @@ And then install the new dependencies:
 bundle install
 ```
 
+### Adding Guacamole to an existing Rails application
+
+Maybe you're bold and want to add Guacamole to an existing Rails application. In this case some things are different, because you already have an ORM configured. Throughout the remaining README you will find examples of using generators and rake tasks to support you. All the generators must be invoked with the `--orm guacamole` flag. Without this you will generate both, ActiveRecord and Guacamole files:
+
+```shell
+bundle exec rails generate model pony name:string birthday:date color:string --orm guacamole
+```
+
+Guacamole will not overwrite existing rake tasks and thus you need to invoke them with under the guacamole namespace:
+
+```shell
+rake db:guacamole:create
+rake db:guacamole:purge
+rake db:guacamole:drop
+```
+
+Everything else should work as described in the README. If you encounter any errors while working with an existing Rails application, please let us know.
+
 ### Configuration
 
 After you created the application and installed the dependencies the first thing you need is a configuration file. The database connection is pretty much configured as expected: With a YAML file. Luckily you don't have to create this file by yourself but you can use a generator to do it for you:
