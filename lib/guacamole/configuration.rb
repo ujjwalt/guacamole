@@ -99,6 +99,7 @@ module Guacamole
         config = YAML.load_file(file_name)[current_environment.to_s]
 
         self.database = create_database_connection_from(config)
+        warn_if_database_was_not_yet_created
       end
 
       def current_environment
@@ -133,6 +134,18 @@ module Guacamole
         default_logger       = Logger.new(STDOUT)
         default_logger.level = Logger::INFO
         default_logger
+      end
+
+      # Prints a warning to STDOUT and the logger if the configured database could not be found
+      #
+      # @note Ashikawa::Core doesn't know if the database is not present or the collection was not created.
+      #       Thus we will just give the user a warning if the database was not found upon initialization.
+      def warn_if_database_was_not_yet_created
+        database.send_request 'version' # The /version is database specific
+      rescue Ashikawa::Core::ResourceNotFound
+        warning_msg = "[WARNING] The configured database ('#{database.name}') cannot be found. Please run `rake db:create` to create it."
+        logger.warn warning_msg
+        warn warning_msg
       end
     end
 
