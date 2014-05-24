@@ -1,6 +1,7 @@
 [![RubyDoc](http://img.shields.io/badge/📄-RubyDoc-be1d77.svg)](http://rubydoc.info/gems/guacamole/frames)
 [![Build Status](http://img.shields.io/travis/triAGENS/guacamole.svg)](https://travis-ci.org/triAGENS/guacamole)
 [![Code Climate](http://img.shields.io/codeclimate/github/triAGENS/guacamole.svg)](https://codeclimate.com/github/triAGENS/guacamole)
+[![Inline docs](http://inch-pages.github.io/github/triAGENS/guacamole.svg)](http://inch-pages.github.io/github/triAGENS/guacamole)
 [![Gem Version](http://img.shields.io/gem/v/guacamole.svg)](https://rubygems.org/gems/guacamole)
 
 # Guacamole
