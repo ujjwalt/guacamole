@@ -88,6 +88,7 @@ describe Guacamole::Configuration do
       allow(subject).to receive(:current_environment).and_return(current_environment)
       allow(subject).to receive(:database=)
       allow(subject).to receive(:create_database_connection_from)
+      allow(subject).to receive(:warn_if_database_was_not_yet_created)
       allow(config).to  receive(:[]).with('development')
       allow(YAML).to    receive(:load_file).with('config_file.yml').and_return(config)
     end
@@ -122,6 +123,19 @@ describe Guacamole::Configuration do
         'database' => 'test_db'
       )
       allow(subject).to receive(:create_database_connection_from).and_call_original
+
+      subject.load 'config_file.yml'
+    end
+
+    it 'should warn if the database was not found' do
+      allow(subject.database).to receive(:name)
+      expect(subject.database).to receive(:send_request).with('version').and_raise(Ashikawa::Core::ResourceNotFound)
+      expect(subject).to receive(:warn_if_database_was_not_yet_created).and_call_original
+
+      logger = double('logger')
+      expect(logger).to receive(:warn)
+      expect(subject).to receive(:warn)
+      allow(subject).to receive(:logger).and_return(logger)
 
       subject.load 'config_file.yml'
     end
