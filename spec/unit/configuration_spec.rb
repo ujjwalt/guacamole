@@ -210,24 +210,15 @@ describe Guacamole::Configuration do
     end
 
     context 'erb support' do
-      let(:config_file) { Tempfile.new 'guacamole.yml' }
+      let(:config_file) { File.open 'spec/support/guacamole.yml.erb' }
       let(:protocol_via_erb) { ENV['ARANGODB_PROTOCOL'] = 'https' }
       let(:database_via_erb) { ENV['ARANGODB_DATABASE'] = 'my_playground' }
 
       before do
-        expect(subject).to receive(:process_file_with_erb).and_call_original
-        config_file.write <<-YAML
-development:
-  protocol: '<%= ENV['ARANGODB_PROTOCOL'] %>'
-  host: 'localhost'
-  port: 8529
-  database: '<%= ENV['ARANGODB_DATABASE'] %>'
-        YAML
-        config_file.close
+        allow(subject).to receive(:process_file_with_erb).and_call_original
       end
 
       after do
-        config_file.unlink
         ENV.delete 'ARANGODB_PROTOCOL'
         ENV.delete 'ARANGODB_DATABASE'
       end
