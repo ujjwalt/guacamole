@@ -28,4 +28,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'faker', '~> 1.2.0'
   spec.add_development_dependency 'logging', '~> 1.8.1'
   spec.add_development_dependency 'pry', '~> 0.9.12'
+  spec.add_development_dependency 'codeclimate-test-reporter', '~> 0.3.0'
 end
