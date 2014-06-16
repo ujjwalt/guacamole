@@ -99,14 +99,14 @@ describe Guacamole::IdentityMap do
     it 'should store the object in the map' do
       subject.store cupcake
 
-      expect(subject.include?(cupcake)).to be_true
+      expect(subject.include?(cupcake)).to be true
     end
 
     it 'should use an immutable storage' do
       old_map = subject.identity_map_instance
       subject.store cupcake
 
-      expect(old_map.key?(subject.key_for(cupcake))).to be_false
+      expect(old_map.key?(subject.key_for(cupcake))).to be false
     end
 
     it 'should return the stored object' do

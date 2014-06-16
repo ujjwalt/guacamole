@@ -3,9 +3,4 @@ source 'https://rubygems.org'
 
 gemspec
 
-# Devtools
-group :development, :test do
-  gem 'devtools', git: 'https://github.com/rom-rb/devtools.git'
-  gem 'guard-yard'
-end
-eval_gemfile 'Gemfile.devtools'
+gem 'rspec-its', git: 'https://github.com/rspec/rspec-its.git'

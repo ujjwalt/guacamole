@@ -7,6 +7,8 @@ if ENV['CODECLIMATE_REPO_TOKEN']
   CodeClimate::TestReporter.start
 end
 
+require 'rspec/its'
+
 RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
