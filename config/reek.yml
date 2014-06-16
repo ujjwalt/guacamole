@@ -22,6 +22,7 @@ DuplicateMethodCall:
   exclude:
   - Guacamole::DocumentModelMapper#document_to_model
   - Guacamole::DocumentModelMapper#model_to_document
+  - Guacamole::Configuration#create_database_connection
   max_calls: 1
   allow_calls: []
 FeatureEnvy:
@@ -59,6 +60,7 @@ TooManyInstanceVariables:
   enabled: true
   exclude:
   - Guacamole::DocumentModelMapper
+  - Guacamole::Configuration::ConfigStruct
   max_instance_variables: 3
 TooManyMethods:
   enabled: true
@@ -72,6 +74,8 @@ TooManyStatements:
   - Guacamole::DocumentModelMapper#model_to_document
   - Guacamole::Collection::ClassMethods#create_document_from
   - Guacamole::Collection::ClassMethods#create_referenced_by_models_of
+  - Guacamole::Configuration#create_database_connection
+  - Guacamole::Configuration::ConfigStruct#init_from_uri_string
   max_statements: 5
 UncommunicativeMethodName:
   enabled: true
