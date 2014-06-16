@@ -19,3 +19,6 @@ matrix:
     - rvm: jruby-head
     - rvm: rbx-19mode
 script: "bundle exec rake ci"
+addons:
+  code_climate:
+    repo_token: cd5dd119d022e5b0d4fda98d25aa93473ed5b580c3f621475c3e605a858f5790

@@ -45,9 +45,9 @@ describe 'ModelBasics' do
     end
 
     it 'should validate its attributes' do
-      expect(subject.valid?).to be_false
+      expect(subject.valid?).to be false
       subject.title = 'The Legend of Zelda'
-      expect(subject.valid?).to be_true
+      expect(subject.valid?).to be true
     end
 
     it 'should know its model name' do

@@ -135,12 +135,14 @@ describe Guacamole::Configuration do
   end
 
   describe 'create_database_connection' do
-    let(:config_struct) { double('ConfigStruct', url: 'http://localhost', username: 'user', password: 'pass', database: 'pony_db') }
-    let(:arango_config) { double('ArangoConfig').as_null_object }
-    let(:database)      { double('Ashikawa::Core::Database') }
+    let(:config_struct)    { double('ConfigStruct', url: 'http://localhost', username: 'user', password: 'pass', database: 'pony_db') }
+    let(:arango_config)    { double('ArangoConfig').as_null_object }
+    let(:database)         { double('Ashikawa::Core::Database') }
+    let(:guacamole_logger) { double('logger') }
 
     before do
       allow(Ashikawa::Core::Database).to receive(:new).and_yield(arango_config).and_return(database)
+      allow(subject).to receive(:logger).and_return(guacamole_logger)
     end
 
     it 'should create the actual Ashikawa::Core::Database instance' do
@@ -152,7 +154,7 @@ describe Guacamole::Configuration do
     end
 
     it 'should pass the Guacamole logger to the Ashikawa::Core::Database connection' do
-      expect(arango_config).to receive(:logger=).with(subject.logger)
+      expect(arango_config).to receive(:logger=).with(guacamole_logger)
 
       subject.create_database_connection config_struct
     end
@@ -205,6 +207,7 @@ describe Guacamole::Configuration do
     end
 
     it 'should warn if the database was not found' do
+      allow(subject).to receive(:database).and_return(double('Database'))
       allow(subject.database).to receive(:name)
       expect(subject.database).to receive(:send_request).with('version').and_raise(Ashikawa::Core::ResourceNotFound)
       expect(subject).to receive(:warn_if_database_was_not_yet_created).and_call_original

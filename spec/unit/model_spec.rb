@@ -19,7 +19,7 @@ describe Guacamole::Model do
     it 'should include Virtus.model' do
       expect(subject.ancestors.any? do |ancestor|
         ancestor.to_s.include? 'Virtus'
-      end).to be_true
+      end).to be true
     end
 
     it 'should include ActiveModel::Validation' do
@@ -64,12 +64,12 @@ describe Guacamole::Model do
 
     it 'should be persisted if it has a key' do
       subject.key = 'my_key'
-      expect(subject.persisted?).to be_true
+      expect(subject.persisted?).to be true
     end
 
     it "should not be persisted if it doesn't have a key" do
       subject.key = nil
-      expect(subject.persisted?).to be_false
+      expect(subject.persisted?).to be false
     end
   end
 
