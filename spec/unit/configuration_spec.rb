@@ -96,7 +96,7 @@ describe Guacamole::Configuration do
       let(:config_struct) { subject.build_config(config_hash) }
 
       it 'should create a struct with a database URL' do
-        expect(config_struct.url).to eq 'http://localhost:8529/_db/awesome_db'
+        expect(config_struct.url).to eq 'http://localhost:8529'
       end
 
       it 'should create a struct with a username' do
@@ -105,6 +105,10 @@ describe Guacamole::Configuration do
 
       it 'should create a struct with password' do
         expect(config_struct.password).to eq 'password'
+      end
+
+      it 'should create a struct with database' do
+        expect(config_struct.database).to eq 'awesome_db'
       end
     end
 
@@ -113,7 +117,7 @@ describe Guacamole::Configuration do
       let(:config_struct) { subject.build_config(database_url) }
 
       it 'should create a struct with a database URL' do
-        expect(config_struct.url).to eq 'http://localhost:8529/_db/awesome_db'
+        expect(config_struct.url).to eq 'http://localhost:8529'
       end
 
       it 'should create a struct with a username' do
@@ -123,11 +127,15 @@ describe Guacamole::Configuration do
       it 'should create a struct with password' do
         expect(config_struct.password).to eq 'password'
       end
+
+      it 'should create a struct with database' do
+        expect(config_struct.database).to eq 'awesome_db'
+      end
     end
   end
 
   describe 'create_database_connection' do
-    let(:config_struct) { double('ConfigStruct', url: 'http://localhost', username: 'user', password: 'pass') }
+    let(:config_struct) { double('ConfigStruct', url: 'http://localhost', username: 'user', password: 'pass', database: 'pony_db') }
     let(:arango_config) { double('ArangoConfig').as_null_object }
     let(:database)      { double('Ashikawa::Core::Database') }
 

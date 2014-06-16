@@ -71,7 +71,7 @@ module Guacamole
   class Configuration
     # A wrapper object to handle both configuration from a connection URI and a hash.
     class ConfigStruct
-      attr_reader :url, :username, :password
+      attr_reader :url, :username, :password, :database
 
       def initialize(config_hash_or_url)
         case config_hash_or_url
@@ -89,14 +89,16 @@ module Guacamole
         @username = uri.user
         @password = uri.password
         uri.user  = nil
+        uri.path.match(%r{/_db/(?<db_name>\w+)/?}) { |match| @database = match[:db_name] }
 
-        @url = uri.to_s
+        @url      = "#{uri.scheme}://#{uri.hostname}:#{uri.port}"
       end
 
       def init_from_hash(hash)
         @username = hash['username']
         @password = hash['password']
-        @url      = "#{hash['protocol']}://#{hash['host']}:#{hash['port']}/_db/#{hash['database']}"
+        @database = hash['database']
+        @url      = "#{hash['protocol']}://#{hash['host']}:#{hash['port']}"
       end
     end
 
@@ -158,10 +160,11 @@ module Guacamole
       # @api private
       def create_database_connection(config)
         self.database = Ashikawa::Core::Database.new do |arango_config|
-          arango_config.url      = config.url
-          arango_config.username = config.username
-          arango_config.password = config.password
-          arango_config.logger   = logger
+          arango_config.url           = config.url
+          arango_config.username      = config.username
+          arango_config.password      = config.password
+          arango_config.database_name = config.database if config.database
+          arango_config.logger        = logger
         end
       end
 
