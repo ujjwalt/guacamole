@@ -140,8 +140,14 @@ module Guacamole
         return false unless model.valid?
 
         add_timestamps_to_model(model)
-        create_document_from(model)
+        callbacks(model).run_callbacks :create do
+          create_document_from(model)
+        end
         model
+      end
+
+      def callbacks(model)
+        Callbacks.callbacks_for(model)
       end
 
       # Delete a model from the database

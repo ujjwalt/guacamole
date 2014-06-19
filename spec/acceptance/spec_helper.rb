@@ -8,6 +8,7 @@ require 'fabrication'
 require 'faker'
 require 'logging'
 require 'ashikawa-core'
+require 'pry'
 
 # This is required to remove the deprecation warning introduced in this commit:
 # https://github.com/svenfuchs/i18n/commit/3b6e56e06fd70f6e4507996b017238505e66608c.

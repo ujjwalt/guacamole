@@ -10,8 +10,18 @@ class TestCollection
   include Guacamole::Collection
 end
 
+class FakeCallbacks
+  def self.run_callbacks(kind, &block)
+    block.call
+  end
+end
+
 describe Guacamole::Collection do
   subject { TestCollection }
+
+  before do
+    allow(subject).to receive(:callbacks).and_return(FakeCallbacks)
+  end
 
   describe 'Configuration' do
     it 'should set the connection to the ArangoDB collection' do
