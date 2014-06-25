@@ -192,14 +192,16 @@ module Guacamole
         key
       end
 
-      def valid?(context = nil)
+      def valid_with_callbacks?(context = nil)
         callbacks.run_callbacks :validate do
-          super(context)
+          valid_without_callbacks?(context)
         end
       end
+      alias_method :valid_without_callbacks?, :valid?
+      alias_method :valid?, :valid_with_callbacks?
 
       def callbacks
-        Callbacks.callbacks_for(self)
+        Guacamole::Callbacks.callbacks_for(self)
       end
 
       def ==(other)
