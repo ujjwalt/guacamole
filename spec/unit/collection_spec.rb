@@ -10,17 +10,19 @@ class TestCollection
   include Guacamole::Collection
 end
 
-class FakeCallbacks
-  def self.run_callbacks(kind, &block)
-    block.call
-  end
-end
-
 describe Guacamole::Collection do
+  let(:callbacks) { double('Callback') }
+  let(:callbacks_module) { double('CallbacksModule') }
+
   subject { TestCollection }
 
   before do
-    allow(subject).to receive(:callbacks).and_return(FakeCallbacks)
+    allow(callbacks_module).to receive(:callbacks_for).and_return(callbacks)
+    allow(callbacks).to receive(:run_callbacks).with(:create).and_yield
+    allow(callbacks).to receive(:run_callbacks).with(:save).and_yield
+    allow(callbacks).to receive(:run_callbacks).with(:update).and_yield
+    allow(callbacks).to receive(:run_callbacks).with(:destroy).and_yield
+    stub_const('Guacamole::Callbacks', callbacks_module)
   end
 
   describe 'Configuration' do
@@ -141,14 +143,20 @@ describe Guacamole::Collection do
 
       before do
         allow(model).to receive(:valid?).and_return(true)
+        allow(connection).to receive(:create_document).with(document).and_return(document)
+        allow(model).to receive(:persisted?).and_return(false)
+        allow(subject).to receive(:callbacks).with(model).and_return(callbacks)
+      end
+
+      it 'should run the save callbacks for the given model' do
+        expect(subject).to receive(:callbacks).with(model).and_return(callbacks)
+        expect(callbacks).to receive(:run_callbacks).with(:save).and_yield
+
+        subject.save model
       end
 
       context 'which is not persisted' do
 
-        before do
-          allow(connection).to receive(:create_document).with(document).and_return(document)
-          allow(model).to receive(:persisted?).and_return(false)
-        end
 
         it 'should return the model after calling save' do
           expect(subject.save(model)).to eq model
@@ -341,6 +349,13 @@ describe Guacamole::Collection do
         subject.create model
       end
 
+      it 'should run the create callbacks for the given model' do
+        expect(subject).to receive(:callbacks).with(model).and_return(callbacks)
+        expect(callbacks).to receive(:run_callbacks).with(:create).and_yield
+
+        subject.create model
+      end
+
       context 'with referenced model' do
         let(:referenced_model)                { double('ReferencedModel') }
         let(:referenced_model_name)           { :some_referenced_model }
@@ -458,10 +473,21 @@ describe Guacamole::Collection do
 
     before do
       allow(connection).to receive(:fetch).with(key).and_return(document)
+      allow(subject).to receive(:by_key)
       allow(document).to receive(:delete)
     end
 
     context 'a key was provided' do
+      before do
+        allow(mapper).to receive(:document_to_model).with(document).and_return(model)
+      end
+
+      it 'should load the document and instantiate the model' do
+        expect(mapper).to receive(:document_to_model).with(document).and_return(model)
+
+        subject.delete key
+      end
+
       it 'should delete the according document' do
         expect(document).to receive(:delete)
 
@@ -470,6 +496,13 @@ describe Guacamole::Collection do
 
       it 'should return the according key' do
         expect(subject.delete(key)).to eq key
+      end
+
+      it 'should run the destroy callbacks for the given model' do
+        expect(subject).to receive(:callbacks).with(model).and_return(callbacks)
+        expect(callbacks).to receive(:run_callbacks).with(:destroy).and_yield
+
+        subject.delete model
       end
     end
 
@@ -482,6 +515,13 @@ describe Guacamole::Collection do
 
       it 'should return the according key' do
         expect(subject.delete(model)).to eq key
+      end
+
+      it 'should run the destroy callbacks for the given model' do
+        expect(subject).to receive(:callbacks).with(model).and_return(callbacks)
+        expect(callbacks).to receive(:run_callbacks).with(:destroy).and_yield
+
+        subject.delete model
       end
     end
   end
@@ -532,6 +572,13 @@ describe Guacamole::Collection do
 
       it 'should not update created_at' do
         expect(model).not_to receive(:created_at=)
+
+        subject.replace model
+      end
+
+      it 'should run the update callbacks for the given model' do
+        expect(subject).to receive(:callbacks).with(model).and_return(callbacks)
+        expect(callbacks).to receive(:run_callbacks).with(:update).and_yield
 
         subject.replace model
       end
@@ -632,6 +679,16 @@ describe Guacamole::Collection do
       subject.map do
         method_to_call_on_mapper
       end
+    end
+  end
+
+  describe 'callbacks' do
+    let(:model) { double('Model') }
+
+    it 'should get the callback instance for the given model' do
+      expect(callbacks_module).to receive(:callbacks_for).with(model)
+
+      subject.callbacks model
     end
   end
 end

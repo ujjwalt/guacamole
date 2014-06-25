@@ -122,7 +122,9 @@ module Guacamole
       #   podcast.title = 'Even better'
       #   PodcastsCollection.save(podcast)
       def save(model)
-        model.persisted? ? replace(model) : create(model)
+        callbacks(model).run_callbacks :save do
+          model.persisted? ? replace(model) : create(model)
+        end
       end
 
       # Persist a model in the collection
@@ -146,11 +148,10 @@ module Guacamole
         model
       end
 
-      def callbacks(model)
-        Callbacks.callbacks_for(model)
-      end
-
       # Delete a model from the database
+      #
+      # If you provide a key, we will fetch the model first to run the `:destroy`
+      # callbacks for that model.
       #
       # @param [String, Model] model_or_key The key of the model or a model
       # @return [String] The key
@@ -159,13 +160,26 @@ module Guacamole
       # @example Delete a podcast by model
       #   PodcastsCollection.delete(podcast)
       def delete(model_or_key)
-        key = if model_or_key.respond_to? :key
-                model_or_key.key
-              else
-                model_or_key
-              end
-        fetch_document(key).delete
-        key
+        document, model = constitently_get_document_and_model(model_or_key)
+
+        callbacks(model).run_callbacks :destroy do
+          document.delete
+        end
+
+        model.key
+      end
+
+      # Gets the document **and** model instance for either a given model or a key.
+      #
+      # @api private
+      # @param [String, Model] model_or_key The key of the model or a model
+      # @return [Array<Ashikawa::Core::Document, Model>] Both the document and model for the given input
+      def constitently_get_document_and_model(model_or_key)
+        if model_or_key.respond_to?(:key)
+          [fetch_document(model_or_key.key), model_or_key]
+        else
+          [document = fetch_document(model_or_key), mapper.document_to_model(document)]
+        end
       end
 
       # Replace a model in the database with its new version
@@ -185,7 +199,9 @@ module Guacamole
         return false unless model.valid?
 
         model.updated_at = Time.now
-        replace_document_from(model)
+        callbacks(model).run_callbacks :update do
+          replace_document_from(model)
+        end
         model
       end
 
@@ -352,6 +368,15 @@ module Guacamole
         model.rev = response['_rev']
 
         document
+      end
+
+      # Gets the callback class for the given model class
+      #
+      # @api private
+      # @param [Model] model The model to look up callbacks for
+      # @return [Callbacks] An instance of the registered callback class
+      def callbacks(model)
+        Callbacks.callbacks_for(model)
       end
     end
   end
