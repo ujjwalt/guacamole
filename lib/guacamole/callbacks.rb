@@ -14,39 +14,21 @@ module Guacamole
       define_model_callbacks :create, :validate
     end
 
-    class NoopCallback
+    class DefaultCallback
       include Guacamole::Callbacks
-    end
-
-    class CallbackChain
-      def initialize(model, *callbacks)
-        @callbacks = callbacks.flatten.compact
-        @model     = model
-      end
-
-      def run_callbacks(kind, &block)
-        @callbacks.each do |cb|
-          cb.new(@model).run_callbacks kind, &block
-        end
-      end
     end
 
     class << self
       def register_callback(model_class, callback_class)
-        registry[model_class] ||= []
-        registry[model_class] << callback_class
+        registry[model_class] = callback_class
       end
 
       def callbacks_for(model)
-        CallbackChain.new(model, default_callbacks, registry[model.class])
+        registry[model.class].new(model)
       end
 
       def registry
-        @registry ||= {}
-      end
-
-      def default_callbacks
-        [NoopCallback]
+        @registry ||= Hash.new(DefaultCallback)
       end
     end
 
