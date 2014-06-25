@@ -11,7 +11,7 @@ module Guacamole
     included do
       extend ActiveModel::Callbacks
 
-      define_model_callbacks :create
+      define_model_callbacks :create, :validate
     end
 
     class NoopCallback

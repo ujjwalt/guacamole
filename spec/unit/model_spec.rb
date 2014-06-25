@@ -11,9 +11,19 @@ class OtherModel
   include Guacamole::Model
 end
 
+class FakeCallbacks
+  def self.run_callbacks(kind, &block)
+    block.call
+  end
+end
+
 describe Guacamole::Model do
   subject { TestModel }
   let(:current_time) { Time.now }
+
+  before do
+    allow(subject).to receive(:callbacks).and_return(FakeCallbacks)
+  end
 
   describe 'module inclusion' do
     it 'should include Virtus.model' do

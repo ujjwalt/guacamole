@@ -192,6 +192,16 @@ module Guacamole
         key
       end
 
+      def valid?(context = nil)
+        callbacks.run_callbacks :validate do
+          super(context)
+        end
+      end
+
+      def callbacks
+        Callbacks.callbacks_for(self)
+      end
+
       def ==(other)
         other.instance_of?(self.class) &&
           attributes.all? do |attribute, value|
