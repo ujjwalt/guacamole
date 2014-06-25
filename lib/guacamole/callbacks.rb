@@ -2,6 +2,7 @@
 
 require 'active_support'
 require 'active_support/concern'
+require 'active_support/core_ext/string/inflections'
 require 'active_model' # Cherry Pick not possible
 
 module Guacamole
@@ -11,7 +12,7 @@ module Guacamole
     included do
       extend ActiveModel::Callbacks
 
-      define_model_callbacks :create, :validate
+      define_model_callbacks :validate, :save, :create, :update, :destroy
     end
 
     class DefaultCallback
