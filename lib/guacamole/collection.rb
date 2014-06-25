@@ -97,7 +97,7 @@ module Guacamole
       def by_key(key)
         raise Ashikawa::Core::DocumentNotFoundException unless key
 
-        mapper.document_to_model connection.fetch(key)
+        mapper.document_to_model fetch_document(key)
       end
 
       # Persist a model in the collection or replace it in the database, depending if it is already persisted
