@@ -172,6 +172,13 @@ module Guacamole
     # I know that this is technically not true, but the reality is a parse error:
     # @!parse include Virtus
 
+    module ClassMethods
+      def callbacks(name_of_callbacks_class)
+        callback_class = name_of_callbacks_class.to_s.camelcase.constantize
+        Callbacks.register_callback self, callback_class
+      end
+    end
+
     included do
       include ActiveModel::Validations
       include ActiveModel::Naming

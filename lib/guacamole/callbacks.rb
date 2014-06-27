@@ -33,13 +33,6 @@ module Guacamole
       end
     end
 
-    module ClassMethods
-      def around(model_class_name)
-        model_class = model_class_name.to_s.camelcase.constantize
-        Callbacks.register_callback model_class, self
-      end
-    end
-
     def initialize(model_instance)
       @object = model_instance
     end

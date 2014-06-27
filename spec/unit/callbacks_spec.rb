@@ -41,12 +41,6 @@ describe Guacamole::Callbacks do
   describe 'building callbacks' do
     subject { FakeCallback }
 
-    it 'should let you configure the model class to work with' do
-      expect(Guacamole::Callbacks).to receive(:register_callback).with(FakeModel, subject)
-
-      subject.around :FakeModel
-    end
-
     it 'should include ActiveModel::Callbacks' do
       expect(subject.ancestors).to include ActiveModel::Callbacks
     end

@@ -3,33 +3,8 @@
 require 'guacamole'
 require 'acceptance/spec_helper'
 
-class SecurePony
-  include Guacamole::Model
-
-  attribute :name, String
-  attribute :token, String
-  attribute :hashed_password, String
-
-  # define a virtual attribute
-  attr_accessor :password, :safety_switch
-end
-
-class SecurePoniesCollection
-  include Guacamole::Collection
-end
-
-class Party
-  def self.throw!; end
-end
-
-class TimingLogger
-  def self.log_time(*args); end
-end
-
 class SecurePonyCallbacks
   include Guacamole::Callbacks
-
-  around :secure_pony
 
   # Those will be triggered by the collection
   before_create :hash_password
@@ -68,6 +43,31 @@ class SecurePonyCallbacks
     yield
     TimingLogger.log_time 'after_validate'
   end
+end
+
+class SecurePony
+  include Guacamole::Model
+
+  callbacks :secure_pony_callbacks
+
+  attribute :name, String
+  attribute :token, String
+  attribute :hashed_password, String
+
+  # define a virtual attribute
+  attr_accessor :password, :safety_switch
+end
+
+class SecurePoniesCollection
+  include Guacamole::Collection
+end
+
+class Party
+  def self.throw!; end
+end
+
+class TimingLogger
+  def self.log_time(*args); end
 end
 
 describe 'CallbacksSpec' do
