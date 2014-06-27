@@ -181,7 +181,7 @@ module Guacamole
 
     included do
       include ActiveModel::Validations
-      include ActiveModel::Naming
+      extend ActiveModel::Naming
       include ActiveModel::Conversion
       include Virtus.model
 
