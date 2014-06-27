@@ -70,6 +70,19 @@ module Guacamole
   #       attribute :contributor_names, Array[String]
   #     end
   #
+  # @!method self.callbacks(name_of_callbacks_class)
+  #   Registers a single callback class to be used for this model
+  #
+  #   @api public
+  #   @param [Symbol] name_of_callbacks_class The name of the the callback class to be used
+  #
+  #   @example
+  #     class BlogPost
+  #       include Guacamole::Model
+  #
+  #       callbacks :blog_post_callbacks
+  #     end
+  #
   # @!method self.validates
   #   This method is a shortcut to all default validators and any custom validator classes ending in 'Validator'
   #
@@ -164,6 +177,12 @@ module Guacamole
   #
   #   @param [Model] other the model to compare with
   #   @api public
+  #
+  # @!method callbacks
+  #   Returns the registered callback class instantiated with `self`
+  #
+  #   @api private
+  #   @return [Callback] The registered callback class instantiated with `self`
   module Model
     extend ActiveSupport::Concern
     # @!parse include ActiveModel::Validations

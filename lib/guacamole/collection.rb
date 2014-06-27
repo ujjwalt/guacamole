@@ -159,7 +159,7 @@ module Guacamole
       # @example Delete a podcast by model
       #   PodcastsCollection.delete(podcast)
       def delete(model_or_key)
-        document, model = constitently_get_document_and_model(model_or_key)
+        document, model = consistently_get_document_and_model(model_or_key)
 
         callbacks(model).run_callbacks :destroy do
           document.delete
@@ -173,7 +173,7 @@ module Guacamole
       # @api private
       # @param [String, Model] model_or_key The key of the model or a model
       # @return [Array<Ashikawa::Core::Document, Model>] Both the document and model for the given input
-      def constitently_get_document_and_model(model_or_key)
+      def consistently_get_document_and_model(model_or_key)
         if model_or_key.respond_to?(:key)
           [fetch_document(model_or_key.key), model_or_key]
         else
