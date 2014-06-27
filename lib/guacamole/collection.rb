@@ -141,7 +141,6 @@ module Guacamole
       def create(model)
         return false unless model.valid?
 
-        add_timestamps_to_model(model)
         callbacks(model).run_callbacks :create do
           create_document_from(model)
         end
@@ -198,7 +197,6 @@ module Guacamole
       def replace(model)
         return false unless model.valid?
 
-        model.updated_at = Time.now
         callbacks(model).run_callbacks :update do
           replace_document_from(model)
         end
@@ -289,15 +287,6 @@ module Guacamole
       # the mapper.
       def map(&block)
         mapper.instance_eval(&block)
-      end
-
-      # Timestamp a fresh model
-      #
-      # @api private
-      def add_timestamps_to_model(model)
-        timestamp = Time.now
-        model.created_at = timestamp
-        model.updated_at = timestamp
       end
 
       # Create a document from a model

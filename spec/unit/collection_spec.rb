@@ -162,19 +162,6 @@ describe Guacamole::Collection do
           expect(subject.save(model)).to eq model
         end
 
-        it 'should set timestamps before creating the document' do
-          now = double('Time.now')
-
-          allow(Time).to receive(:now).once.and_return(now)
-
-          expect(model).to receive(:created_at=).with(now).ordered
-          expect(model).to receive(:updated_at=).with(now).ordered
-
-          allow(connection).to receive(:create_document).with(document).and_return(document).ordered
-
-          subject.save model
-        end
-
         it 'should add key to model' do
           expect(model).to receive(:key=).with(key)
 
@@ -197,15 +184,6 @@ describe Guacamole::Collection do
         end
 
         let(:model)    { double('Model', key: key).as_null_object }
-
-        it 'should set the updated_at timestamp before replacing the document' do
-          now = double('Time.now')
-
-          allow(Time).to receive(:now).once.and_return(now)
-          expect(model).to receive(:updated_at=).with(now)
-
-          subject.save model
-        end
 
         it 'should replace the document by key via the connection' do
           expect(connection).to receive(:replace).with(key, document)
@@ -252,8 +230,6 @@ describe Guacamole::Collection do
         end
 
         it 'should not be changed' do
-          expect(model).not_to receive(:created_at=)
-          expect(model).not_to receive(:updated_at=)
           expect(model).not_to receive(:key=)
           expect(model).not_to receive(:rev=)
 
@@ -322,19 +298,6 @@ describe Guacamole::Collection do
 
       it 'should return the model after calling create' do
         expect(subject.create(model)).to eq model
-      end
-
-      it 'should set timestamps before creating the document' do
-        now = double('Time.now')
-
-        allow(Time).to receive(:now).once.and_return(now)
-
-        expect(model).to receive(:created_at=).with(now).ordered
-        expect(model).to receive(:updated_at=).with(now).ordered
-
-        allow(connection).to receive(:create_document).with(document).and_return(document).ordered
-
-        subject.create model
       end
 
       it 'should add key to model' do
@@ -452,8 +415,6 @@ describe Guacamole::Collection do
       end
 
       it 'should not be changed' do
-        expect(model).not_to receive(:created_at=)
-        expect(model).not_to receive(:updated_at=)
         expect(model).not_to receive(:key=)
         expect(model).not_to receive(:rev=)
 
@@ -544,15 +505,6 @@ describe Guacamole::Collection do
         allow(model).to receive(:valid?).and_return(true)
       end
 
-      it 'should set the updated_at timestamp before replacing the document' do
-        now = double('Time.now')
-
-        allow(Time).to receive(:now).once.and_return(now)
-        expect(model).to receive(:updated_at=).with(now)
-
-        subject.replace model
-      end
-
       it 'should replace the document by key via the connection' do
         expect(connection).to receive(:replace).with(key, document)
 
@@ -568,12 +520,6 @@ describe Guacamole::Collection do
 
       it 'should return the model' do
         expect(subject.replace(model)).to eq model
-      end
-
-      it 'should not update created_at' do
-        expect(model).not_to receive(:created_at=)
-
-        subject.replace model
       end
 
       it 'should run the update callbacks for the given model' do
@@ -597,7 +543,6 @@ describe Guacamole::Collection do
 
       it 'should not be changed' do
         expect(model).not_to receive(:rev=)
-        expect(model).not_to receive(:updated_at=)
 
         subject.replace model
       end

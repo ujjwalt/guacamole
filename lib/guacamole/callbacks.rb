@@ -13,6 +13,9 @@ module Guacamole
       extend ActiveModel::Callbacks
 
       define_model_callbacks :validate, :save, :create, :update, :destroy
+
+      before_create :add_create_timestamps
+      before_update :update_updated_at_timestamp
     end
 
     class DefaultCallback
@@ -39,6 +42,15 @@ module Guacamole
 
     def object
       @object
+    end
+
+    def add_create_timestamps
+      object.created_at = Time.now
+      update_updated_at_timestamp
+    end
+
+    def update_updated_at_timestamp
+      object.updated_at = Time.now
     end
   end
 end

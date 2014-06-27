@@ -38,6 +38,30 @@ describe Guacamole::Callbacks do
     end
   end
 
+  describe 'time stamp related callbacks' do
+    let(:model) { double('Model') }
+    let(:now)   { double('Time') }
+    subject { FakeCallback.new model }
+
+    before do
+      allow(Time).to receive(:now).twice.and_return(now)
+    end
+
+    it 'should set created_at / updated_at before_create' do
+      expect(model).to receive(:created_at=).with(now)
+      expect(model).to receive(:updated_at=).with(now)
+
+      subject.run_callbacks :create
+    end
+
+    it 'should set updated_at before_update' do
+      expect(model).to_not receive(:created_at=)
+      expect(model).to receive(:updated_at=).with(now)
+
+      subject.run_callbacks :update
+    end
+  end
+
   describe 'building callbacks' do
     subject { FakeCallback }
 
@@ -47,7 +71,7 @@ describe Guacamole::Callbacks do
   end
 
   describe 'callback instances' do
-    let(:model) { double('Model') }
+    let(:model) { double('Model').as_null_object }
     subject { FakeCallback.new model }
 
     it 'should provide access to the concrete model instance' do

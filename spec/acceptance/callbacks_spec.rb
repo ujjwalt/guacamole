@@ -95,10 +95,64 @@ describe 'CallbacksSpec' do
     end
 
     it 'should fire the around create callback' do
-      expect(TimingLogger).to receive(:log_time).with('before_create')
-      expect(TimingLogger).to receive(:log_time).with('after_create')
+      expect(TimingLogger).to receive(:log_time).with('before_create').ordered
+      expect(TimingLogger).to receive(:log_time).with('after_create').ordered
 
       collection.save pinkie_pie
+    end
+
+    context 'fill time stamp attributes' do
+      let(:past) { 'Oct 26 1955 01:21'.to_datetime }
+      let(:now)  { 'Oct 26 1985 01:21'.to_datetime }
+
+      it 'should fill created_at and updated_at on create' do
+        Timecop.freeze(now) do
+          collection.save pinkie_pie
+        end
+
+        expect(pinkie_pie.created_at).to eq now
+        expect(pinkie_pie.updated_at).to eq now
+      end
+
+      it 'should update updated_at on update' do
+        collection.save pinkie_pie
+        pinkie_pie.name = 'Pinkie Pie - Updated'
+
+        Timecop.freeze(now) do
+          collection.save pinkie_pie
+        end
+
+        expect(pinkie_pie.updated_at).to eq now
+      end
+
+      context 'with the default callback' do
+        let(:pinkie_pie) { Fabricate.build(:pony, name: 'Pinkie Pie') }
+        let(:collection) { PoniesCollection }
+
+        it 'should fill created_at and updated_at on create' do
+          Timecop.freeze(now) do
+            collection.save pinkie_pie
+          end
+
+          expect(pinkie_pie.created_at).to eq now
+          expect(pinkie_pie.updated_at).to eq now
+        end
+
+        it 'should update updated_at on update' do
+          Timecop.freeze(past) do
+            collection.save pinkie_pie
+          end
+
+          pinkie_pie.color = 'pink'
+
+          Timecop.freeze(now) do
+            collection.save pinkie_pie
+          end
+
+          expect(pinkie_pie.created_at).to eq past
+          expect(pinkie_pie.updated_at).to eq now
+        end
+      end
     end
   end
 
