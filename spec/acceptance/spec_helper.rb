@@ -64,3 +64,19 @@ RSpec.configure do |config|
     Guacamole.configuration.database.truncate
   end
 end
+
+# Collections for fabricator models
+
+require 'fabricators/article'
+
+class ArticlesCollection
+  include Guacamole::Collection
+
+  map do
+    embeds :comments
+  end
+end
+
+class PoniesCollection
+  include Guacamole::Collection
+end

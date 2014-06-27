@@ -2,29 +2,6 @@
 require 'guacamole'
 require 'acceptance/spec_helper'
 
-class Comment
-  include Guacamole::Model
-
-  attribute :text, String
-end
-
-class Article
-  include Guacamole::Model
-
-  attribute :title, String
-  attribute :comments, Array[Comment]
-
-  validates :title, presence: true
-end
-
-class ArticlesCollection
-  include Guacamole::Collection
-
-  map do
-    embeds :comments
-  end
-end
-
 describe 'ModelBasics' do
 
   describe Article do

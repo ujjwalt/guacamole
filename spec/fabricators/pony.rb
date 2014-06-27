@@ -1,7 +1,9 @@
 # -*- encoding: utf-8 -*-
 
-Fabricator(:pony) do
-  name  { Faker::Name.name }
-  color { %w(purple pink blue yellow green white).sample }
-  type  { %w(Pegasus Earthpony Unicorn).sample }
+class Pony
+  include Guacamole::Model
+
+  attribute :name, String
+  attribute :color, String
+  attribute :type, Array[String]
 end
