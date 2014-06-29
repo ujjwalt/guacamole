@@ -3,16 +3,11 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
+require 'active_support'
 require 'fabrication'
 require 'faker'
 require 'logging'
 require 'ashikawa-core'
-
-begin
-  require 'debugger'
-rescue LoadError
-  puts "Debugger is not available. Maybe you're Travis."
-end
 
 # This is required to remove the deprecation warning introduced in this commit:
 # https://github.com/svenfuchs/i18n/commit/3b6e56e06fd70f6e4507996b017238505e66608c.
@@ -49,6 +44,12 @@ Guacamole.configure do |config|
   config.load File.join(File.dirname(__FILE__), 'config', 'guacamole.yml')
 end
 
+begin
+  Guacamole.configuration.database.create
+rescue Ashikawa::Core::ClientError
+  # Database already exists, don't worry
+end
+
 RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
@@ -59,6 +60,6 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    Guacamole.configuration.database.collections.each { |collection| collection.truncate! }
+    Guacamole.configuration.database.truncate
   end
 end

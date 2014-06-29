@@ -1,6 +1,7 @@
 [![RubyDoc](http://img.shields.io/badge/📄-RubyDoc-be1d77.svg)](http://rubydoc.info/gems/guacamole/frames)
 [![Build Status](http://img.shields.io/travis/triAGENS/guacamole.svg)](https://travis-ci.org/triAGENS/guacamole)
 [![Code Climate](http://img.shields.io/codeclimate/github/triAGENS/guacamole.svg)](https://codeclimate.com/github/triAGENS/guacamole)
+[![Inline docs](http://inch-ci.org/github/triAGENS/guacamole.svg)](http://inch-ci.org/github/triAGENS/guacamole)
 [![Gem Version](http://img.shields.io/gem/v/guacamole.svg)](https://rubygems.org/gems/guacamole)
 
 # Guacamole
@@ -11,7 +12,7 @@ Guacamole is an Object Document Mapper (ODM) for the multi-model NoSQL database 
   * Reflect the nature of NoSQL in general and ArangoDB in particular
   * Focus on long-term maintainability of your application
 
-While the first two points don't need any further explanation we want to lay out the motivation behind the last point: 'Ease of use' is very important to us, but we made some fundamental decisions which will cause a stepper learning curve than other libraries, notably ActiveRecord. If you have a traditional Rails background you will find some things quite different. We decided to go this direction, because we think it better suites the features of ArangoDB. Applying the semantics of a different environment maybe helps with the first steps but will become problematic if you further advance in your understanding of the possibilities.
+While the first two points don't need any further explanation we want to lay out the motivation behind the last point: 'Ease of use' is very important to us, but we made some fundamental decisions which will cause a steeper learning curve than other libraries, notably ActiveRecord. If you have a traditional Rails background you will find some things quite different. We decided to go this direction, because we think it better suites the features of ArangoDB. Applying the semantics of a different environment may help with the first steps but will become problematic if you further advance in your understanding of the possibilities.
 
 That said we still think we provide a sufficient API that is quite easy to get hold of. It is just a bit different from what you were doing with ActiveRecord.
 
@@ -24,7 +25,7 @@ Since Guacamole is in an alpha state we suggest you to create a new Rails applic
 First of all create your shiny new application, without ActiveRecord of course:
 
 ```shell
-rails new -O $my_awesome_app
+rails new --skip-active-record $my_awesome_app
 ```
 
 Add this line to your application's Gemfile:
@@ -38,6 +39,24 @@ And then install the new dependencies:
 ```shell
 bundle install
 ```
+
+### Adding Guacamole to an existing Rails application
+
+Maybe you're bold and want to add Guacamole to an existing Rails application. In this case some things are different, because you already have an ORM configured. Throughout the remaining README you will find examples of using generators and rake tasks to support you. All the generators must be invoked with the `--orm guacamole` flag. Without this you will generate both, ActiveRecord and Guacamole files:
+
+```shell
+bundle exec rails generate model pony name:string birthday:date color:string --orm guacamole
+```
+
+Guacamole will not overwrite existing rake tasks and thus you need to invoke them with under the guacamole namespace:
+
+```shell
+rake db:guacamole:create
+rake db:guacamole:purge
+rake db:guacamole:drop
+```
+
+Everything else should work as described in the README. If you encounter any errors while working with an existing Rails application, please let us know.
 
 ### Configuration
 
@@ -58,6 +77,8 @@ development:
   username: ''
   database: 'pony_blog_development'
 ```
+
+**Note**: If you use something like [dotenv](https://github.com/bkeepers/dotenv) we will process the config file with ERB before loading the YAML. Another way to configure the database connection is to provide a connection URI like this: `http://user:pass@localhost:8529/_db/pony_ville_db`. If you don't use authentication, just skip the user/password part. The connection URI must be provided as the environment variable `DATABASE_URL` and has precedence over the config file.
 
 After you created a configuration file you can create the database as in any other Rails project:
 
@@ -154,7 +175,7 @@ As the model doesn't know anything about the database you cannot define database
 
 ### Collections
 
-Collections are your gateway to the database. They persist your models and offer querying for them. They will translate the raw data from the database to your domain models and vice versa. By convention they are the pluralized version of the model with the suffix `Collection`. So given the model from above, this could be the according collection:
+Collections are your gateway to the database. They persist your models and offer querying for them. They will translate the raw data from the database to your domain models and vice versa. By convention they are the pluralized version of the model with the suffix `Collection`. So given the model from above, this could be the following collection:
 
 ```ruby
 class PoniesCollection
@@ -309,13 +330,13 @@ As you can see, from the model perspective there is nothing special about an emb
 
 ```json
 {
-  "_id": [...],
-  "_rev": [...],
-  "_key": [...],
+  "_id": "...",
+  "_rev": "...",
+  "_key": "...",
   "title": "The grand blog post",
   "body": "Lorem ipsum [...]",
   "create_at": "2014-05-03T16:55:43+02:00",
-  "updated_at": "2014-05-03T16:55:43+02:00"
+  "updated_at": "2014-05-03T16:55:43+02:00",
   "comments": [
     {
       "text": "This was really a grand blog post",
@@ -328,6 +349,7 @@ As you can see, from the model perspective there is nothing special about an emb
       "updated_at": "2014-05-04T16:55:43+02:00"
     }
   ]
+}
 ```
 
 **Note**: Again this will only work if you stick with the convention. So far there is no support to configure this more fine grained.
@@ -371,7 +393,7 @@ class PostsCollection
   include Guacamole::Collection
 
   map do
-    references :user
+    references :author
   end
 end
 ```
@@ -402,17 +424,17 @@ Guacamole is a very young project. A lot of stuff is missing but still, if you w
 
 Currently we're not providing any testing helper, thus you need to make sure to cleanup the database yourself before each run. You can look at the [`spec/acceptance/spec_helper.rb`](https://github.com/triAGENS/guacamole/blob/master/spec/acceptance/spec_helper.rb) of Guacamole for inspiration of how to do that.
 
-For test data generation we're using the awesome [Fabrication gem](http://www.fabricationgem.org/). Again you find some usage examples in Guacamole's own acceptance tests. We didn't tested Factory Girl yet, but it eventually will work, too.
+For test data generation we're using the awesome [Fabrication gem](http://www.fabricationgem.org/). Again you find some usage examples in Guacamole's own acceptance tests. We haven't tested Factory Girl yet but it eventually will work too.
 
 ### Authentication
 
-Any integration into an authentication framework need to be done by you. At this time we have nothing to share with you about this topic.
+Any integration into an authentication framework needs to be done by you. At this time we have nothing to share with you about this topic.
 
 ### Forms
 
-While we not tested them they should probably work due to the ActiveModel compliance. But again, this not confirmed and you need to try it out by yourself.
+While we haven't tested them, they should probably work due to the ActiveModel compliance. But again, this is not confirmed and you need to try it out yourself.
 
-If you give Guacamole a try, please feel free to ask us any question or give us feedback to anything on your mind. This is really crucial for us and we would be more than happy to hear back from you.
+If you give Guacamole a try, please feel free to ask us any question or give us feedback about anything on your mind. This is really crucial for us and we would be more than happy to hear back from you.
 
 ## Todos
 
@@ -423,6 +445,26 @@ While there are a lot of open issues we would like to present you a high level o
   * Callbacks and dirty tracking for models
   * An example Rails application to be used as both an acceptance test suite and a head start for Guacamole and ArangoDB
   * An AQL query builder
+
+### Experimental AQL Support
+
+As mentioned before we're working on [something more sophisticated to support AQL](https://github.com/moonglum/brazil/issues/8). But this will not be finished any time soon. Meanwhile you could play with the experimental AQL support:
+
+```ruby
+config.guacamole.experimental_features = [:aql_support]
+```
+
+After that you can perform very basic queries like this one:
+
+```ruby
+PoniesCollection.by_aql('FILTER pony.name == @name', name: 'Rainbow Dash')
+```
+
+The result of this will a correctly mapped Array of `Pony` models.
+
+**Note**: Please use only this form to pass parameters into a query. Using string interpolation will leave you vulnerable to AQL-injections.
+
+For more information about usage please refer to the RDoc and the code.
 
 ## Issues or Questions
 

@@ -2,11 +2,12 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
-begin
-  require 'debugger'
-rescue LoadError
-  puts "Debugger is not available. Maybe you're Travis."
+if ENV['CODECLIMATE_REPO_TOKEN']
+  require 'codeclimate-test-reporter'
+  CodeClimate::TestReporter.start
 end
+
+require 'rspec/its'
 
 RSpec.configure do |config|
   config.expect_with :rspec do |c|

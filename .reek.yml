@@ -22,7 +22,7 @@ DuplicateMethodCall:
   exclude:
   - Guacamole::DocumentModelMapper#document_to_model
   - Guacamole::DocumentModelMapper#model_to_document
-  - Guacamole::Configuration#_add_missing_methods_to_database
+  - Guacamole::Configuration#create_database_connection
   max_calls: 1
   allow_calls: []
 FeatureEnvy:
@@ -34,7 +34,8 @@ IrresponsibleModule:
   - - !ruby/regexp /Generators/
 LongParameterList:
   enabled: true
-  exclude: []
+  exclude:
+  - Guacamole::Collection::ClassMethods#by_aql
   max_params: 2
   overrides:
     initialize:
@@ -45,8 +46,7 @@ LongYieldList:
   max_params: 2
 NestedIterators:
   enabled: true
-  exclude:
-  - Guacamole::Configuration#_add_missing_methods_to_database
+  exclude: []
   max_allowed_nesting: 2
   ignore_iterators: []
 NilCheck:
@@ -60,11 +60,12 @@ TooManyInstanceVariables:
   enabled: true
   exclude:
   - Guacamole::DocumentModelMapper
+  - Guacamole::Configuration::ConfigStruct
   max_instance_variables: 3
 TooManyMethods:
   enabled: true
   exclude: []
-  max_methods: 10
+  max_methods: 20
 TooManyStatements:
   enabled: true
   exclude:
@@ -73,8 +74,8 @@ TooManyStatements:
   - Guacamole::DocumentModelMapper#model_to_document
   - Guacamole::Collection::ClassMethods#create_document_from
   - Guacamole::Collection::ClassMethods#create_referenced_by_models_of
-  - Guacamole::Configuration#_add_missing_methods_to_database
-  - Guacamole::Configuration#create_database_connection_from
+  - Guacamole::Configuration#create_database_connection
+  - Guacamole::Configuration::ConfigStruct#init_from_uri_string
   max_statements: 5
 UncommunicativeMethodName:
   enabled: true
