@@ -321,10 +321,7 @@ module Guacamole
       # @param type [Symbol] the type of hash
       # @option options [Array[Symbol]] :on The attributes to index on
       # @option options [Boolean] :unique wether the hash index is unique or not
-      def index(type, options)
-        options[:on] = [options[:on]].flatten
-        connection.add_index type, options
-      end
+      def_delegators :connection, :add_index, :index
     end
   end
 end
