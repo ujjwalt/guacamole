@@ -460,7 +460,35 @@ You can define define callbacks for the following actions:
  * `around_destroy`
  * `after_destroy`
 
-**Note** Since the callbacks related with validation are executed from the model and not the collection make no assumption when those get executed in relation to the persistence related callbacks. You can only be sure that the validation will be performed **before** a document is written to the database.
+The order of the callback execution is as follows:
+
+**Creating an object**
+
+ * `before_validation`
+ * `after_validation`
+ * `before_save`
+ * `around_save`
+ * `before_create`
+ * `around_create`
+ * `after_create`
+ * `after_save`
+
+**Updating an object**
+
+ * `before_validation`
+ * `after_validation`
+ * `before_save`
+ * `around_save`
+ * `before_update`
+ * `around_update`
+ * `after_update`
+ * `after_save`
+
+**Destroying an object**
+
+ * `before_destroy`
+ * `around_destroy`
+ * `after_destroy`
 
 The order of the callback execution is as follows:
 

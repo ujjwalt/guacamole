@@ -18,9 +18,8 @@ describe Guacamole::Collection do
 
   before do
     allow(callbacks_module).to receive(:callbacks_for).and_return(callbacks)
-    allow(callbacks).to receive(:run_callbacks).with(:create).and_yield
-    allow(callbacks).to receive(:run_callbacks).with(:save).and_yield
-    allow(callbacks).to receive(:run_callbacks).with(:update).and_yield
+    allow(callbacks).to receive(:run_callbacks).with(:save, :create).and_yield
+    allow(callbacks).to receive(:run_callbacks).with(:save, :update).and_yield
     allow(callbacks).to receive(:run_callbacks).with(:destroy).and_yield
     stub_const('Guacamole::Callbacks', callbacks_module)
   end
@@ -145,19 +144,15 @@ describe Guacamole::Collection do
         allow(model).to receive(:valid?).and_return(true)
         allow(connection).to receive(:create_document).with(document).and_return(document)
         allow(model).to receive(:persisted?).and_return(false)
-        allow(subject).to receive(:callbacks).with(model).and_return(callbacks)
       end
 
       it 'should run the save callbacks for the given model' do
         expect(subject).to receive(:callbacks).with(model).and_return(callbacks)
-        expect(callbacks).to receive(:run_callbacks).with(:save).and_yield
 
         subject.save model
       end
 
       context 'which is not persisted' do
-
-
         it 'should return the model after calling save' do
           expect(subject.save(model)).to eq model
         end
@@ -313,8 +308,14 @@ describe Guacamole::Collection do
       end
 
       it 'should run the create callbacks for the given model' do
-        expect(subject).to receive(:callbacks).with(model).and_return(callbacks)
-        expect(callbacks).to receive(:run_callbacks).with(:create).and_yield
+        expect(callbacks).to receive(:run_callbacks).with(:save, :create).and_yield
+
+        subject.create model
+      end
+
+      it 'should run first the validation and then the create callbacks' do
+        expect(model).to receive(:valid?).ordered.and_return(true)
+        expect(callbacks).to receive(:run_callbacks).ordered.with(:save, :create).and_yield
 
         subject.create model
       end
@@ -523,8 +524,14 @@ describe Guacamole::Collection do
       end
 
       it 'should run the update callbacks for the given model' do
-        expect(subject).to receive(:callbacks).with(model).and_return(callbacks)
-        expect(callbacks).to receive(:run_callbacks).with(:update).and_yield
+        expect(callbacks).to receive(:run_callbacks).with(:save, :update).and_yield
+
+        subject.update model
+      end
+
+      it 'should run first the validation and then the update callbacks' do
+        expect(model).to receive(:valid?).ordered.and_return(true)
+        expect(callbacks).to receive(:run_callbacks).ordered.with(:save, :update).and_yield
 
         subject.update model
       end

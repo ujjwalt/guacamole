@@ -122,9 +122,7 @@ module Guacamole
       #   podcast.title = 'Even better'
       #   PodcastsCollection.save(podcast)
       def save(model)
-        callbacks(model).run_callbacks :save do
-          model.persisted? ? update(model) : create(model)
-        end
+        model.persisted? ? update(model) : create(model)
       end
 
       # Persist a model in the collection
@@ -141,7 +139,7 @@ module Guacamole
       def create(model)
         return false unless model.valid?
 
-        callbacks(model).run_callbacks :create do
+        callbacks(model).run_callbacks :save, :create do
           create_document_from(model)
         end
         model
@@ -197,7 +195,7 @@ module Guacamole
       def update(model)
         return false unless model.valid?
 
-        callbacks(model).run_callbacks :update do
+        callbacks(model).run_callbacks :save, :update do
           replace_document_from(model)
         end
         model

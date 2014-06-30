@@ -163,6 +163,45 @@ module Guacamole
       include Guacamole::Callbacks
     end
 
+    # A proxy class around the callback class itself.
+    #
+    # The sole reason for its existence is to specify multiple callback runs at once. The alternative
+    # would have been to nest the `run_callbacks` calls within the caller. It was decided to have bit
+    # more complex proxy class to hide those details from the caller.
+    #
+    # @example
+    #   callbacks = Callbacks.callbacks_for(model)
+    #   callbacks.run_callbacks :save, :create do
+    #     CakeCollection.create model
+    #   end
+    # @private
+    class CallbackProxy
+      attr_reader :callbacks
+
+      # Create a new proxy with the original callbacks class as input
+      #
+      # @param [Callbacks] callbacks The original callback class to be executed
+      def initialize(callbacks)
+        @callbacks = callbacks
+      end
+
+      # Runs the given kinds of callbacks
+      #
+      # @param [Array<Symbol>] callbacks_to_run One or more kinds of callbacks to be run
+      # @yield Will call the code block wrapped by the given callbacks
+      def run_callbacks(*callbacks_to_run, &block)
+        outer = callbacks_to_run.pop
+
+        if callbacks_to_run.empty?
+          @callbacks.run_callbacks(outer, &block)
+        else
+          @callbacks = run_callbacks(*callbacks_to_run) do
+            @callbacks.run_callbacks(outer, &block)
+          end
+        end
+      end
+    end
+
     class << self
       # Register a callback class to be used with the model
       #
@@ -179,7 +218,7 @@ module Guacamole
       # @params [Model] model The model instance for which callbacks must be executed
       # @return [Callbacks] A callback instance with the given model accessible via `object`
       def callbacks_for(model)
-        registry[model.class].new(model)
+        CallbackProxy.new registry[model.class].new(model)
       end
 
       # The internal storage of the callback-model pairs

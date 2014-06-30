@@ -27,13 +27,19 @@ describe Guacamole::Callbacks do
     it 'should retrieve the callback class for a given model class' do
       allow(callback_class).to receive(:new).with(model).and_return(callback_instance)
 
-      expect(subject.callbacks_for(model)).to eq callback_instance
+      expect(subject.callbacks_for(model).callbacks).to eq callback_instance
+    end
+
+    it 'should wrap the callback class in a proxy' do
+      allow(callback_class).to receive(:new).with(model).and_return(callback_instance)
+
+      expect(subject.callbacks_for(model)).to be_instance_of Guacamole::Callbacks::CallbackProxy
     end
 
     context 'no callback defined for model class' do
       it 'should return the DefaultCallback' do
         any_model = double('ModelWithoutCallbacks')
-        expect(subject.callbacks_for(any_model)).to be_instance_of Guacamole::Callbacks::DefaultCallback
+        expect(subject.callbacks_for(any_model).callbacks).to be_instance_of Guacamole::Callbacks::DefaultCallback
       end
     end
   end
@@ -104,6 +110,30 @@ describe Guacamole::Callbacks do
 
     it 'should include Guacamole::Callbacks' do
       expect(subject.ancestors).to include Guacamole::Callbacks
+    end
+  end
+
+  describe Guacamole::Callbacks::CallbackProxy do
+    let(:model) { double('Model').as_null_object }
+    let(:something) { double('Something') }
+    let(:callbacks) { FakeCallback.new(model) }
+    subject { Guacamole::Callbacks::CallbackProxy.new callbacks }
+
+    before do
+      allow(something).to receive(:do_it).once
+    end
+
+    it 'should proxy a single kind of callback to the underlying callback class' do
+      expect(callbacks).to receive(:run_callbacks).with(:update).and_yield
+
+      subject.run_callbacks(:update) { something.do_it }
+    end
+
+    it 'should execute multiple kinds of callbacks on the underlying callback class' do
+      expect(callbacks).to receive(:run_callbacks).with(:save).ordered.and_yield
+      expect(callbacks).to receive(:run_callbacks).with(:create).ordered.and_yield
+
+      subject.run_callbacks(:save, :create) { something.do_it }
     end
   end
 end
