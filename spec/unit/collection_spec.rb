@@ -20,7 +20,7 @@ describe Guacamole::Collection do
     allow(callbacks_module).to receive(:callbacks_for).and_return(callbacks)
     allow(callbacks).to receive(:run_callbacks).with(:save, :create).and_yield
     allow(callbacks).to receive(:run_callbacks).with(:save, :update).and_yield
-    allow(callbacks).to receive(:run_callbacks).with(:destroy).and_yield
+    allow(callbacks).to receive(:run_callbacks).with(:delete).and_yield
     stub_const('Guacamole::Callbacks', callbacks_module)
   end
 
@@ -460,9 +460,9 @@ describe Guacamole::Collection do
         expect(subject.delete(key)).to eq key
       end
 
-      it 'should run the destroy callbacks for the given model' do
+      it 'should run the delete callbacks for the given model' do
         expect(subject).to receive(:callbacks).with(model).and_return(callbacks)
-        expect(callbacks).to receive(:run_callbacks).with(:destroy).and_yield
+        expect(callbacks).to receive(:run_callbacks).with(:delete).and_yield
 
         subject.delete model
       end
@@ -479,9 +479,9 @@ describe Guacamole::Collection do
         expect(subject.delete(model)).to eq key
       end
 
-      it 'should run the destroy callbacks for the given model' do
+      it 'should run the delete callbacks for the given model' do
         expect(subject).to receive(:callbacks).with(model).and_return(callbacks)
-        expect(callbacks).to receive(:run_callbacks).with(:destroy).and_yield
+        expect(callbacks).to receive(:run_callbacks).with(:delete).and_yield
 
         subject.delete model
       end

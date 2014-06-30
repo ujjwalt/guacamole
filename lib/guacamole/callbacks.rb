@@ -126,20 +126,20 @@ module Guacamole
   #   @param [Symbol] method_name The name of the method to be executed
   #   @api public
   #
-  # @!method self.before_destroy(method_name)
+  # @!method self.before_delete(method_name)
   #   Registers a method to be run before deleting the model
   #
   #   @param [Symbol] method_name The name of the method to be executed
   #   @api public
   #
-  # @!method self.around_destroy(method_name)
+  # @!method self.around_delete(method_name)
   #   Registers a method to be run before and after the deletion
   #
   #   @param [Symbol] method_name The name of the method to be executed
   #   @api public
   #   @note You must `yield` at some point in the method.
   #
-  # @!method self.after_destroy(method_name)
+  # @!method self.after_delete(method_name)
   #   Registers a method to be run after the deletion of the model has happened
   #
   #   @param [Symbol] method_name The name of the method to be executed
@@ -151,7 +151,7 @@ module Guacamole
     included do
       extend ActiveModel::Callbacks
 
-      define_model_callbacks :validate, :save, :create, :update, :destroy
+      define_model_callbacks :validate, :save, :create, :update, :delete
 
       before_create :add_create_timestamps
       before_update :update_updated_at_timestamp

@@ -147,7 +147,7 @@ module Guacamole
 
       # Delete a model from the database
       #
-      # If you provide a key, we will fetch the model first to run the `:destroy`
+      # If you provide a key, we will fetch the model first to run the `:delete`
       # callbacks for that model.
       #
       # @param [String, Model] model_or_key The key of the model or a model
@@ -159,7 +159,7 @@ module Guacamole
       def delete(model_or_key)
         document, model = consistently_get_document_and_model(model_or_key)
 
-        callbacks(model).run_callbacks :destroy do
+        callbacks(model).run_callbacks :delete do
           document.delete
         end
 

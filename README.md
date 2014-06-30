@@ -456,9 +456,9 @@ You can define define callbacks for the following actions:
  * `before_update`
  * `around_update`
  * `after_update`
- * `before_destroy`
- * `around_destroy`
- * `after_destroy`
+ * `before_delete`
+ * `around_delete`
+ * `after_delete`
 
 The order of the callback execution is as follows:
 
@@ -486,9 +486,9 @@ The order of the callback execution is as follows:
 
 **Destroying an object**
 
- * `before_destroy`
- * `around_destroy`
- * `after_destroy`
+ * `before_delete`
+ * `around_delete`
+ * `after_delete`
 
 The order of the callback execution is as follows:
 

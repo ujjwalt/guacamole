@@ -100,8 +100,8 @@ describe Guacamole::Callbacks do
       expect { subject.run_callbacks :update }.not_to raise_error
     end
 
-    it 'should run :destroy callbacks' do
-      expect { subject.run_callbacks :destroy }.not_to raise_error
+    it 'should run :delete callbacks' do
+      expect { subject.run_callbacks :delete }.not_to raise_error
     end
   end
 
