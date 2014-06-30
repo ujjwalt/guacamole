@@ -185,7 +185,7 @@ describe Guacamole::Collection do
 
         let(:model)    { double('Model', key: key).as_null_object }
 
-        it 'should replace the document by key via the connection' do
+        it 'should update the document by key via the connection' do
           expect(connection).to receive(:replace).with(key, document)
 
           subject.save model
@@ -250,7 +250,7 @@ describe Guacamole::Collection do
 
         let(:model)    { double('Model', key: key).as_null_object }
 
-        it 'should not be used to replace the document' do
+        it 'should not be used to update the document' do
           expect(connection).not_to receive(:replace)
 
           subject.save model
@@ -487,7 +487,7 @@ describe Guacamole::Collection do
     end
   end
 
-  describe 'replace' do
+  describe 'update' do
     let(:key)      { double('Key') }
     let(:rev)      { double('Rev') }
     let(:model)    { double('Model', key: key).as_null_object }
@@ -505,28 +505,28 @@ describe Guacamole::Collection do
         allow(model).to receive(:valid?).and_return(true)
       end
 
-      it 'should replace the document by key via the connection' do
+      it 'should update the document by key via the connection' do
         expect(connection).to receive(:replace).with(key, document)
 
-        subject.replace model
+        subject.update model
       end
 
       it 'should update the revision after replacing the document' do
         allow(connection).to receive(:replace).and_return(response).ordered
         expect(model).to receive(:rev=).with(rev).ordered
 
-        subject.replace model
+        subject.update model
       end
 
       it 'should return the model' do
-        expect(subject.replace(model)).to eq model
+        expect(subject.update(model)).to eq model
       end
 
       it 'should run the update callbacks for the given model' do
         expect(subject).to receive(:callbacks).with(model).and_return(callbacks)
         expect(callbacks).to receive(:run_callbacks).with(:update).and_yield
 
-        subject.replace model
+        subject.update model
       end
     end
 
@@ -535,20 +535,20 @@ describe Guacamole::Collection do
         allow(model).to receive(:valid?).and_return(false)
       end
 
-      it 'should not be used to replace the document' do
+      it 'should not be used to update the document' do
         expect(connection).not_to receive(:replace)
 
-        subject.replace model
+        subject.update model
       end
 
       it 'should not be changed' do
         expect(model).not_to receive(:rev=)
 
-        subject.replace model
+        subject.update model
       end
 
       it 'should return false' do
-        expect(subject.replace(model)).to be false
+        expect(subject.update(model)).to be false
       end
     end
   end
