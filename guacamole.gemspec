@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'activemodel', '>= 4.0.0'
   spec.add_dependency 'hamster', '~> 1.0.1.pre.rc.1'
 
+  spec.add_development_dependency 'bcrypt', '3.1.7'
   spec.add_development_dependency 'codeclimate-test-reporter', '~> 0.3.0'
   spec.add_development_dependency 'fabrication', '~> 2.8.1'
   spec.add_development_dependency 'faker', '~> 1.2.0'

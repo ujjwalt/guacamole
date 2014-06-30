@@ -34,10 +34,10 @@ module Guacamole
   #   class UserCallbacks
   #     include Guacamole::Callbacks
   #
-  #     before_create :hash_password
+  #     before_create :encrypt_password
   #
-  #     def hash_password
-  #       object.hashed_password = Digest::SHA1.hexdigest(object.password)
+  #     def encrypt_password
+  #       object.encrypted_password = BCrypt::Password.create(object.password)
   #     end
   #   end
   #

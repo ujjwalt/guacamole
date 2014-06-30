@@ -3,11 +3,10 @@ class <%= class_name %>Callbacks
   include Guacamole::Callbacks
 
   # Add your callbacks
-  # before_create :hash_password
+  # before_create :encrypt_password
 
-  # In your methods you will have access to the model instance via the `object` method
-  # def hash_password
-  #   object.hashed_password = Digest::SHA1.hexdigest(object.password)
+  # def encrypt_password
+  #   object.encrypted_password = BCrypt::Password.create(object.password)
   # end
 end
 <% end -%>

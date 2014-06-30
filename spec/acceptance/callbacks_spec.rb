@@ -3,11 +3,13 @@
 require 'guacamole'
 require 'acceptance/spec_helper'
 
+require 'bcrypt'
+
 class SecurePonyCallbacks
   include Guacamole::Callbacks
 
   # Those will be triggered by the collection
-  before_create :hash_password
+  before_create :encrypt_password
   after_create  :throw_welcome_party
   around_create :log_create_time
 
@@ -16,8 +18,8 @@ class SecurePonyCallbacks
   after_validate  :remove_safety_switch
   around_validate :log_validate_time
 
-  def hash_password
-    object.hashed_password = Digest::SHA1.hexdigest object.password
+  def encrypt_password
+    object.encrypted_password = BCrypt::Password.create(object.password)
   end
 
   def throw_welcome_party
@@ -52,7 +54,7 @@ class SecurePony
 
   attribute :name, String
   attribute :token, String
-  attribute :hashed_password, String
+  attribute :encrypted_password, String
 
   # define a virtual attribute
   attr_accessor :password, :safety_switch
@@ -85,7 +87,7 @@ describe 'CallbacksSpec' do
     it 'should fire the before create callback' do
       collection.save pinkie_pie
 
-      expect(pinkie_pie.hashed_password).to eq Digest::SHA1.hexdigest pinkie_pie.password
+      expect(BCrypt::Password.new(pinkie_pie.encrypted_password)).to eq pinkie_pie.password
     end
 
     it 'should fire the after create callback' do
