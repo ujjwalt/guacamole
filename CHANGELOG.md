@@ -1,3 +1,22 @@
+## Version 0.3.0
+
+**Codename: Spread your Wings**
+
+This release improved the configurability of Guacamole, updated Ashikawa::Core, enhanced the README and added callbacks.
+
+Notable changes are:
+
+  * Implemented external callbacks
+  * Added support for `DATABASE_URL`
+  * Parse `guacamole.yml` with ERB
+  * Updated Ashikawa::Core to 0.12.0
+  * Improved README
+  * Fixed generators with `test_unit`
+  * Internal changes
+    * Removed `debugger` in favor of `pry`
+    * Removed `devtools`
+
+
 ## Version 0.2.0
 
 **Codename: Into the Storm**
