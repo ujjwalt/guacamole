@@ -55,3 +55,6 @@ TrivialAccessors:
 
 RegexpLiteral:
   Enabled: false
+
+StringLiterals:
+  EnforcedStyle: single_quotes

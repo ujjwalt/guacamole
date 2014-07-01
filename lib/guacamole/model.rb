@@ -70,6 +70,19 @@ module Guacamole
   #       attribute :contributor_names, Array[String]
   #     end
   #
+  # @!method self.callbacks(name_of_callbacks_class)
+  #   Registers a single callback class to be used for this model
+  #
+  #   @api public
+  #   @param [Symbol] name_of_callbacks_class The name of the the callback class to be used
+  #
+  #   @example
+  #     class BlogPost
+  #       include Guacamole::Model
+  #
+  #       callbacks :blog_post_callbacks
+  #     end
+  #
   # @!method self.validates
   #   This method is a shortcut to all default validators and any custom validator classes ending in 'Validator'
   #
@@ -164,6 +177,12 @@ module Guacamole
   #
   #   @param [Model] other the model to compare with
   #   @api public
+  #
+  # @!method callbacks
+  #   Returns the registered callback class instantiated with `self`
+  #
+  #   @api private
+  #   @return [Callback] The registered callback class instantiated with `self`
   module Model
     extend ActiveSupport::Concern
     # @!parse include ActiveModel::Validations
@@ -172,9 +191,16 @@ module Guacamole
     # I know that this is technically not true, but the reality is a parse error:
     # @!parse include Virtus
 
+    module ClassMethods
+      def callbacks(name_of_callbacks_class)
+        callback_class = name_of_callbacks_class.to_s.camelcase.constantize
+        Callbacks.register_callback self, callback_class
+      end
+    end
+
     included do
       include ActiveModel::Validations
-      include ActiveModel::Naming
+      extend ActiveModel::Naming
       include ActiveModel::Conversion
       include Virtus.model
 
@@ -190,6 +216,18 @@ module Guacamole
       # For ActiveModel::Conversion compliance only, please use key
       def id
         key
+      end
+
+      def valid_with_callbacks?(context = nil)
+        callbacks.run_callbacks :validate do
+          valid_without_callbacks?(context)
+        end
+      end
+      alias_method :valid_without_callbacks?, :valid?
+      alias_method :valid?, :valid_with_callbacks?
+
+      def callbacks
+        Guacamole::Callbacks.callbacks_for(self)
       end
 
       def ==(other)

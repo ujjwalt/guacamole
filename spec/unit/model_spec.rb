@@ -14,6 +14,14 @@ end
 describe Guacamole::Model do
   subject { TestModel }
   let(:current_time) { Time.now }
+  let(:callbacks) { double('Callback') }
+  let(:callbacks_module) { double('CallbacksModule') }
+
+  before do
+    allow(callbacks_module).to receive(:callbacks_for).and_return(callbacks)
+    allow(callbacks).to receive(:run_callbacks).with(:validate).and_yield
+    stub_const('Guacamole::Callbacks', callbacks_module)
+  end
 
   describe 'module inclusion' do
     it 'should include Virtus.model' do
@@ -70,6 +78,31 @@ describe Guacamole::Model do
     it "should not be persisted if it doesn't have a key" do
       subject.key = nil
       expect(subject.persisted?).to be false
+    end
+  end
+
+  describe 'callbacks' do
+    subject { TestModel.new }
+
+    it 'should register one callback class responsible for this model' do
+      awesome_callbacks_class = double('AwesomeCallbacksClass')
+      stub_const('AwesomeCallbacks', awesome_callbacks_class)
+      expect(callbacks_module).to receive(:register_callback).with(TestModel, awesome_callbacks_class)
+
+      TestModel.callbacks :awesome_callbacks
+    end
+
+    it 'should run validate callbacks on valid?' do
+      expect(callbacks).to receive(:run_callbacks).with(:validate).and_yield
+      expect(subject).to receive(:valid_without_callbacks?)
+
+      subject.valid?
+    end
+
+    it 'should provide method to get callback for self' do
+      expect(callbacks_module).to receive(:callbacks_for).with(subject)
+
+      subject.callbacks
     end
   end
 

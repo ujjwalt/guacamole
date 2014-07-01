@@ -416,6 +416,120 @@ AuthorsCollection.save author
 # => Will save both the author and the post
 ```
 
+### Callbacks
+
+Guacamole allows you to define callbacks for various actions performed on a model. Those callbacks need to be defined in a dedicate class per model. For example to hash the password of a user prior creating the document in the database you would write something like the following:
+
+```ruby
+class UserCallbacks
+  include Guacamole::Callbacks
+
+  before_create :encrypt_password
+
+  def encrypt_password
+    object.encrypted_password = BCrypt::Password.create(object.password)
+  end
+end
+```
+
+Whenever callbacks needs to be executed for a model we create an instance of the specified callback with that model. You have access to the model via the `object` method. To specify a callback for a model you must use the `callbacks` method in that model:
+
+```ruby
+class User
+  include Guacamole::Model
+
+  callbacks :user_callbacks
+end
+``` 
+
+You can define define callbacks for the following actions:
+
+ * `before_validate`
+ * `around_validate`
+ * `after_validate`
+ * `before_save`
+ * `around_save`
+ * `after_save`
+ * `before_create`
+ * `around_create`
+ * `after_create`
+ * `before_update`
+ * `around_update`
+ * `after_update`
+ * `before_delete`
+ * `around_delete`
+ * `after_delete`
+
+The order of the callback execution is as follows:
+
+**Creating an object**
+
+ * `before_validation`
+ * `after_validation`
+ * `before_save`
+ * `around_save`
+ * `before_create`
+ * `around_create`
+ * `after_create`
+ * `after_save`
+
+**Updating an object**
+
+ * `before_validation`
+ * `after_validation`
+ * `before_save`
+ * `around_save`
+ * `before_update`
+ * `around_update`
+ * `after_update`
+ * `after_save`
+
+**Destroying an object**
+
+ * `before_delete`
+ * `around_delete`
+ * `after_delete`
+
+The order of the callback execution is as follows:
+
+**Creating an object**
+
+ 1. `before_validation`
+ 2. `after_validation`
+ 3. `before_save`
+ 4. `around_save`
+ 5. `before_create`
+ 6. `around_create`
+ 7. `after_create`
+ 8. `after_save`
+
+**Updating an object**
+
+ 1. `before_validation`
+ 2. `after_validation`
+ 3. `before_save`
+ 4. `around_save`
+ 5. `before_update`
+ 6. `around_update`
+ 7. `after_update`
+ 8. `after_save`
+
+**Destroying an object**
+
+ 1. `before_delete`
+ 2. `around_delete`
+ 3. `after_delete`
+
+#### Generator Support
+
+Of course we provide a generator to help you setting the required files up:
+
+```shell
+rails generate guacamole:callbacks pony
+```
+
+This will create the callback file, a test template and adds the appropriate register call to the model file.
+
 ## Integration into the Rails Ecosystem™
 
 Guacamole is a very young project. A lot of stuff is missing but still, if you want to get started with ArangoDB and are using Ruby/Rails it will give you a nice head start. Besides a long TODO list we want to hint to some points to help you integrate Guacamole with the rest of the Rails ecosystem:

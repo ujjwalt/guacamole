@@ -8,6 +8,8 @@ require 'fabrication'
 require 'faker'
 require 'logging'
 require 'ashikawa-core'
+require 'pry'
+require 'timecop'
 
 # This is required to remove the deprecation warning introduced in this commit:
 # https://github.com/svenfuchs/i18n/commit/3b6e56e06fd70f6e4507996b017238505e66608c.
@@ -62,4 +64,20 @@ RSpec.configure do |config|
   config.before(:each) do
     Guacamole.configuration.database.truncate
   end
+end
+
+# Collections for fabricator models
+
+require 'fabricators/article'
+
+class ArticlesCollection
+  include Guacamole::Collection
+
+  map do
+    embeds :comments
+  end
+end
+
+class PoniesCollection
+  include Guacamole::Collection
 end

@@ -11,7 +11,18 @@ class TestCollection
 end
 
 describe Guacamole::Collection do
+  let(:callbacks) { double('Callback') }
+  let(:callbacks_module) { double('CallbacksModule') }
+
   subject { TestCollection }
+
+  before do
+    allow(callbacks_module).to receive(:callbacks_for).and_return(callbacks)
+    allow(callbacks).to receive(:run_callbacks).with(:save, :create).and_yield
+    allow(callbacks).to receive(:run_callbacks).with(:save, :update).and_yield
+    allow(callbacks).to receive(:run_callbacks).with(:delete).and_yield
+    stub_const('Guacamole::Callbacks', callbacks_module)
+  end
 
   describe 'Configuration' do
     it 'should set the connection to the ArangoDB collection' do
@@ -131,30 +142,19 @@ describe Guacamole::Collection do
 
       before do
         allow(model).to receive(:valid?).and_return(true)
+        allow(connection).to receive(:create_document).with(document).and_return(document)
+        allow(model).to receive(:persisted?).and_return(false)
+      end
+
+      it 'should run the save callbacks for the given model' do
+        expect(subject).to receive(:callbacks).with(model).and_return(callbacks)
+
+        subject.save model
       end
 
       context 'which is not persisted' do
-
-        before do
-          allow(connection).to receive(:create_document).with(document).and_return(document)
-          allow(model).to receive(:persisted?).and_return(false)
-        end
-
         it 'should return the model after calling save' do
           expect(subject.save(model)).to eq model
-        end
-
-        it 'should set timestamps before creating the document' do
-          now = double('Time.now')
-
-          allow(Time).to receive(:now).once.and_return(now)
-
-          expect(model).to receive(:created_at=).with(now).ordered
-          expect(model).to receive(:updated_at=).with(now).ordered
-
-          allow(connection).to receive(:create_document).with(document).and_return(document).ordered
-
-          subject.save model
         end
 
         it 'should add key to model' do
@@ -180,16 +180,7 @@ describe Guacamole::Collection do
 
         let(:model)    { double('Model', key: key).as_null_object }
 
-        it 'should set the updated_at timestamp before replacing the document' do
-          now = double('Time.now')
-
-          allow(Time).to receive(:now).once.and_return(now)
-          expect(model).to receive(:updated_at=).with(now)
-
-          subject.save model
-        end
-
-        it 'should replace the document by key via the connection' do
+        it 'should update the document by key via the connection' do
           expect(connection).to receive(:replace).with(key, document)
 
           subject.save model
@@ -234,8 +225,6 @@ describe Guacamole::Collection do
         end
 
         it 'should not be changed' do
-          expect(model).not_to receive(:created_at=)
-          expect(model).not_to receive(:updated_at=)
           expect(model).not_to receive(:key=)
           expect(model).not_to receive(:rev=)
 
@@ -256,7 +245,7 @@ describe Guacamole::Collection do
 
         let(:model)    { double('Model', key: key).as_null_object }
 
-        it 'should not be used to replace the document' do
+        it 'should not be used to update the document' do
           expect(connection).not_to receive(:replace)
 
           subject.save model
@@ -306,19 +295,6 @@ describe Guacamole::Collection do
         expect(subject.create(model)).to eq model
       end
 
-      it 'should set timestamps before creating the document' do
-        now = double('Time.now')
-
-        allow(Time).to receive(:now).once.and_return(now)
-
-        expect(model).to receive(:created_at=).with(now).ordered
-        expect(model).to receive(:updated_at=).with(now).ordered
-
-        allow(connection).to receive(:create_document).with(document).and_return(document).ordered
-
-        subject.create model
-      end
-
       it 'should add key to model' do
         expect(model).to receive(:key=).with(key)
 
@@ -327,6 +303,19 @@ describe Guacamole::Collection do
 
       it 'should add rev to model' do
         expect(model).to receive(:rev=).with(rev)
+
+        subject.create model
+      end
+
+      it 'should run the create callbacks for the given model' do
+        expect(callbacks).to receive(:run_callbacks).with(:save, :create).and_yield
+
+        subject.create model
+      end
+
+      it 'should run first the validation and then the create callbacks' do
+        expect(model).to receive(:valid?).ordered.and_return(true)
+        expect(callbacks).to receive(:run_callbacks).ordered.with(:save, :create).and_yield
 
         subject.create model
       end
@@ -427,8 +416,6 @@ describe Guacamole::Collection do
       end
 
       it 'should not be changed' do
-        expect(model).not_to receive(:created_at=)
-        expect(model).not_to receive(:updated_at=)
         expect(model).not_to receive(:key=)
         expect(model).not_to receive(:rev=)
 
@@ -448,10 +435,21 @@ describe Guacamole::Collection do
 
     before do
       allow(connection).to receive(:fetch).with(key).and_return(document)
+      allow(subject).to receive(:by_key)
       allow(document).to receive(:delete)
     end
 
     context 'a key was provided' do
+      before do
+        allow(mapper).to receive(:document_to_model).with(document).and_return(model)
+      end
+
+      it 'should load the document and instantiate the model' do
+        expect(mapper).to receive(:document_to_model).with(document).and_return(model)
+
+        subject.delete key
+      end
+
       it 'should delete the according document' do
         expect(document).to receive(:delete)
 
@@ -460,6 +458,13 @@ describe Guacamole::Collection do
 
       it 'should return the according key' do
         expect(subject.delete(key)).to eq key
+      end
+
+      it 'should run the delete callbacks for the given model' do
+        expect(subject).to receive(:callbacks).with(model).and_return(callbacks)
+        expect(callbacks).to receive(:run_callbacks).with(:delete).and_yield
+
+        subject.delete model
       end
     end
 
@@ -473,10 +478,17 @@ describe Guacamole::Collection do
       it 'should return the according key' do
         expect(subject.delete(model)).to eq key
       end
+
+      it 'should run the delete callbacks for the given model' do
+        expect(subject).to receive(:callbacks).with(model).and_return(callbacks)
+        expect(callbacks).to receive(:run_callbacks).with(:delete).and_yield
+
+        subject.delete model
+      end
     end
   end
 
-  describe 'replace' do
+  describe 'update' do
     let(:key)      { double('Key') }
     let(:rev)      { double('Rev') }
     let(:model)    { double('Model', key: key).as_null_object }
@@ -494,36 +506,34 @@ describe Guacamole::Collection do
         allow(model).to receive(:valid?).and_return(true)
       end
 
-      it 'should set the updated_at timestamp before replacing the document' do
-        now = double('Time.now')
-
-        allow(Time).to receive(:now).once.and_return(now)
-        expect(model).to receive(:updated_at=).with(now)
-
-        subject.replace model
-      end
-
-      it 'should replace the document by key via the connection' do
+      it 'should update the document by key via the connection' do
         expect(connection).to receive(:replace).with(key, document)
 
-        subject.replace model
+        subject.update model
       end
 
       it 'should update the revision after replacing the document' do
         allow(connection).to receive(:replace).and_return(response).ordered
         expect(model).to receive(:rev=).with(rev).ordered
 
-        subject.replace model
+        subject.update model
       end
 
       it 'should return the model' do
-        expect(subject.replace(model)).to eq model
+        expect(subject.update(model)).to eq model
       end
 
-      it 'should not update created_at' do
-        expect(model).not_to receive(:created_at=)
+      it 'should run the update callbacks for the given model' do
+        expect(callbacks).to receive(:run_callbacks).with(:save, :update).and_yield
 
-        subject.replace model
+        subject.update model
+      end
+
+      it 'should run first the validation and then the update callbacks' do
+        expect(model).to receive(:valid?).ordered.and_return(true)
+        expect(callbacks).to receive(:run_callbacks).ordered.with(:save, :update).and_yield
+
+        subject.update model
       end
     end
 
@@ -532,21 +542,20 @@ describe Guacamole::Collection do
         allow(model).to receive(:valid?).and_return(false)
       end
 
-      it 'should not be used to replace the document' do
+      it 'should not be used to update the document' do
         expect(connection).not_to receive(:replace)
 
-        subject.replace model
+        subject.update model
       end
 
       it 'should not be changed' do
         expect(model).not_to receive(:rev=)
-        expect(model).not_to receive(:updated_at=)
 
-        subject.replace model
+        subject.update model
       end
 
       it 'should return false' do
-        expect(subject.replace(model)).to be false
+        expect(subject.update(model)).to be false
       end
     end
   end
@@ -622,6 +631,16 @@ describe Guacamole::Collection do
       subject.map do
         method_to_call_on_mapper
       end
+    end
+  end
+
+  describe 'callbacks' do
+    let(:model) { double('Model') }
+
+    it 'should get the callback instance for the given model' do
+      expect(callbacks_module).to receive(:callbacks_for).with(model)
+
+      subject.callbacks model
     end
   end
 end

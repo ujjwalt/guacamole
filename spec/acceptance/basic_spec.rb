@@ -2,29 +2,6 @@
 require 'guacamole'
 require 'acceptance/spec_helper'
 
-class Comment
-  include Guacamole::Model
-
-  attribute :text, String
-end
-
-class Article
-  include Guacamole::Model
-
-  attribute :title, String
-  attribute :comments, Array[Comment]
-
-  validates :title, presence: true
-end
-
-class ArticlesCollection
-  include Guacamole::Collection
-
-  map do
-    embeds :comments
-  end
-end
-
 describe 'ModelBasics' do
 
   describe Article do
@@ -98,6 +75,20 @@ describe 'CollectionBasics' do
       result = subject.by_example(title: 'Disturbed').first
 
       expect(result.title).to eq 'Disturbed'
+    end
+
+    context 'delete documents' do
+      it 'should delete a document by key' do
+        deleted_key = subject.delete(some_article.key)
+
+        expect { subject.by_key(deleted_key) }.to raise_error(Ashikawa::Core::DocumentNotFoundException)
+      end
+
+      it 'should delete a document by model' do
+        deleted_key = subject.delete(some_article)
+
+        expect { subject.by_key(deleted_key) }.to raise_error(Ashikawa::Core::DocumentNotFoundException)
+      end
     end
 
     it 'should allow to nest models' do
