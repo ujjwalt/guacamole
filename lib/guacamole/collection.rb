@@ -123,6 +123,16 @@ module Guacamole
       #   PodcastsCollection.save(podcast)
       def save(model)
         model.persisted? ? replace(model) : create(model)
+      rescue Ashikawa::Core::ClientError => client_error
+        code, sep, message = client_error.message.partition(':')
+        case code.to_i
+        when 1210
+          model.errors.add :index, message.strip
+        when 1211
+          model.errors.add :geo_index, message.strip
+        else
+          raise client_error
+        end
       end
 
       # Persist a model in the collection
