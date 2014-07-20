@@ -124,14 +124,30 @@ module Guacamole
       def save(model)
         model.persisted? ? update(model) : create(model)
       rescue Ashikawa::Core::ClientError => client_error
+        handle_client_error(client_error, model)
+        false
+      end
+
+      # Handles the client error by adding appropriate errros to the model or raising the error again
+      #
+      # @param client_error [Ashikawa::Core::ClientError] the client error that was raised
+      # @param model [Model] the model that failed to be saved
+      def handle_client_error(client_error, model)
         code, sep, message = client_error.message.partition(':')
+        model.errors.add error_type_for(code), message.strip
+      end
+
+      # Return the appropriate error type from the error code
+      #
+      # @param code [FixNum] the code of the client error that was raised
+      def error_type_for(code)
         case code.to_i
         when 1210
-          model.errors.add :index, message.strip
+          :index
         when 1211
-          model.errors.add :geo_index, message.strip
+          :geo_index
         else
-          raise client_error
+          raise
         end
       end
 

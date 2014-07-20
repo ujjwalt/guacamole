@@ -153,7 +153,7 @@ describe 'CollectionBasics' do
         first_document = Fabricate(:article)
         second_document = Fabricate.build(:article, unique_attribute: first_document.unique_attribute)
         expect(first_document.unique_attribute).to eq second_document.unique_attribute
-        subject.save(second_document)
+        expect(subject.save(second_document)).to eq false
         expect(second_document.errors.empty?).to eq false
         expect(second_document.errors).to include(:index)
         expect(second_document.persisted?).to eq false
