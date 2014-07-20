@@ -3,18 +3,6 @@
 require 'guacamole'
 require 'acceptance/spec_helper'
 
-class Pony
-  include Guacamole::Model
-
-  attribute :name, String
-  attribute :color, String
-  attribute :type, Array[String]
-end
-
-class PoniesCollection
-  include Guacamole::Collection
-end
-
 describe 'BasicAQLSupport' do
   subject { PoniesCollection }
 

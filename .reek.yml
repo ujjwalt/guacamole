@@ -23,6 +23,7 @@ DuplicateMethodCall:
   - Guacamole::DocumentModelMapper#document_to_model
   - Guacamole::DocumentModelMapper#model_to_document
   - Guacamole::Configuration#create_database_connection
+  - Guacamole::Callbacks::CallbackProxy#run_callbacks
   max_calls: 1
   allow_calls: []
 FeatureEnvy:

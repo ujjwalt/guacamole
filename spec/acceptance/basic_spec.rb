@@ -103,6 +103,20 @@ describe 'CollectionBasics' do
       expect(result.title).to eq 'Disturbed'
     end
 
+    context 'delete documents' do
+      it 'should delete a document by key' do
+        deleted_key = subject.delete(some_article.key)
+
+        expect { subject.by_key(deleted_key) }.to raise_error(Ashikawa::Core::DocumentNotFoundException)
+      end
+
+      it 'should delete a document by model' do
+        deleted_key = subject.delete(some_article)
+
+        expect { subject.by_key(deleted_key) }.to raise_error(Ashikawa::Core::DocumentNotFoundException)
+      end
+    end
+
     it 'should allow to nest models' do
       article_with_comments = Fabricate(:article_with_two_comments)
       found_article = subject.by_key(article_with_comments.key)

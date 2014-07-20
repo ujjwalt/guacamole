@@ -24,7 +24,7 @@ module Guacamole
     #   Convert a model to a document to save it to the database
     #
     #   You can use this method for your hand made storage or update methods.
-    #   Most of the time it makes more sense to call save or replace though,
+    #   Most of the time it makes more sense to call save or update though,
     #   they do the conversion and handle the communication with the database
     #
     #   @param [Model] model The model to be converted
@@ -97,10 +97,10 @@ module Guacamole
       def by_key(key)
         raise Ashikawa::Core::DocumentNotFoundException unless key
 
-        mapper.document_to_model connection.fetch(key)
+        mapper.document_to_model fetch_document(key)
       end
 
-      # Persist a model in the collection or replace it in the database, depending if it is already persisted
+      # Persist a model in the collection or update it in the database, depending if it is already persisted
       #
       # * If {Model#persisted? model#persisted?} is `false`, the model will be saved in the collection.
       #   Timestamps, revision and key will be set on the model.
@@ -109,7 +109,7 @@ module Guacamole
       #   by key. This will change the updated_at timestamp and revision
       #   of the provided model.
       #
-      # See also {#create create} and {#replace replace} for explicit usage.
+      # See also {#create create} and {#update update} for explicit usage.
       #
       # @param [Model] model The model to be saved
       # @return [Model] The provided model
@@ -117,12 +117,12 @@ module Guacamole
       #   podcast = Podcast.new(title: 'Best Show', guest: 'Dirk Breuer')
       #   PodcastsCollection.save(podcast)
       #   podcast.key #=> '27214247'
-      # @example Get a podcast, update its title, replace it
+      # @example Get a podcast, update its title, update it
       #   podcast = PodcastsCollection.by_key('27214247')
       #   podcast.title = 'Even better'
       #   PodcastsCollection.save(podcast)
       def save(model)
-        model.persisted? ? replace(model) : create(model)
+        model.persisted? ? update(model) : create(model)
       rescue Ashikawa::Core::ClientError => client_error
         code, sep, message = client_error.message.partition(':')
         case code.to_i
@@ -149,12 +149,16 @@ module Guacamole
       def create(model)
         return false unless model.valid?
 
-        add_timestamps_to_model(model)
-        create_document_from(model)
+        callbacks(model).run_callbacks :save, :create do
+          create_document_from(model)
+        end
         model
       end
 
       # Delete a model from the database
+      #
+      # If you provide a key, we will fetch the model first to run the `:delete`
+      # callbacks for that model.
       #
       # @param [String, Model] model_or_key The key of the model or a model
       # @return [String] The key
@@ -163,33 +167,47 @@ module Guacamole
       # @example Delete a podcast by model
       #   PodcastsCollection.delete(podcast)
       def delete(model_or_key)
-        key = if model_or_key.respond_to? :key
-                model_or_key.key
-              else
-                model_or_key
-              end
-        fetch_document(key).delete
-        key
+        document, model = consistently_get_document_and_model(model_or_key)
+
+        callbacks(model).run_callbacks :delete do
+          document.delete
+        end
+
+        model.key
       end
 
-      # Replace a model in the database with its new version
+      # Gets the document **and** model instance for either a given model or a key.
       #
-      # Replaces the currently saved version of the model with
+      # @api private
+      # @param [String, Model] model_or_key The key of the model or a model
+      # @return [Array<Ashikawa::Core::Document, Model>] Both the document and model for the given input
+      def consistently_get_document_and_model(model_or_key)
+        if model_or_key.respond_to?(:key)
+          [fetch_document(model_or_key.key), model_or_key]
+        else
+          [document = fetch_document(model_or_key), mapper.document_to_model(document)]
+        end
+      end
+
+      # Update a model in the database with its new version
+      #
+      # Updates the currently saved version of the model with
       # its new version. It searches for the entry in the database
       # by key. This will change the updated_at timestamp and revision
       # of the provided model.
       #
-      # @param [Model] model The model to be replaced
+      # @param [Model] model The model to be updated
       # @return [Model] The model
-      # @example Get a podcast, update its title, replace it
+      # @example Get a podcast, update its title, update it
       #   podcast = PodcastsCollection.by_key('27214247')
       #   podcast.title = 'Even better'
-      #   PodcastsCollection.replace(podcast)
-      def replace(model)
+      #   PodcastsCollection.update(podcast)
+      def update(model)
         return false unless model.valid?
 
-        model.updated_at = Time.now
-        replace_document_from(model)
+        callbacks(model).run_callbacks :save, :update do
+          replace_document_from(model)
+        end
         model
       end
 
@@ -279,15 +297,6 @@ module Guacamole
         mapper.instance_eval(&block)
       end
 
-      # Timestamp a fresh model
-      #
-      # @api private
-      def add_timestamps_to_model(model)
-        timestamp = Time.now
-        model.created_at = timestamp
-        model.updated_at = timestamp
-      end
-
       # Create a document from a model
       #
       # @api private
@@ -366,6 +375,15 @@ module Guacamole
       # @option options [Array[Symbol]] :on The attributes to index on
       # @option options [Boolean] :unique wether the hash index is unique or not
       def_delegator :connection, :add_index, :index
+
+      # Gets the callback class for the given model class
+      #
+      # @api private
+      # @param [Model] model The model to look up callbacks for
+      # @return [Callbacks] An instance of the registered callback class
+      def callbacks(model)
+        Callbacks.callbacks_for(model)
+      end
     end
   end
 end
