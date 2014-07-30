@@ -73,6 +73,8 @@ require 'fabricators/article'
 class ArticlesCollection
   include Guacamole::Collection
 
+  index :hash, on: :unique_attribute, unique: true
+
   map do
     embeds :comments
   end

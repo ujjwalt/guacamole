@@ -33,8 +33,15 @@ module Guacamole
       extend Forwardable
       def_delegators :mapper, :model_to_document
       def_delegator :connection, :fetch, :fetch_document
+      def_delegator :connection, :add_index, :index
 
       attr_accessor :connection, :mapper, :database
+
+      # ERROR CODES
+      ERROR_CODES = {
+        1210 => :index,
+        1211 => :geo_index
+      }
 
       # The raw `Database` object that was configured
       #
@@ -133,21 +140,11 @@ module Guacamole
       # @param client_error [Ashikawa::Core::ClientError] the client error that was raised
       # @param model [Model] the model that failed to be saved
       def handle_client_error(client_error, model)
-        code, sep, message = client_error.message.partition(':')
-        model.errors.add error_type_for(code), message.strip
-      end
-
-      # Return the appropriate error type from the error code
-      #
-      # @param code [FixNum] the code of the client error that was raised
-      def error_type_for(code)
-        case code.to_i
-        when 1210
-          :index
-        when 1211
-          :geo_index
+        code, _, message = client_error.message.partition(':')
+        if error_code = ERROR_CODES[code.to_i]
+          model.errors.add error_code, message.strip
         else
-          raise
+          raise client_error
         end
       end
 
@@ -382,15 +379,6 @@ module Guacamole
 
         document
       end
-
-      # Ensure an index on the collection on particular attributes
-      #
-      # This creates a hash index on the given attributes unless one exists
-      #
-      # @param type [Symbol] the type of hash
-      # @option options [Array[Symbol]] :on The attributes to index on
-      # @option options [Boolean] :unique wether the hash index is unique or not
-      def_delegator :connection, :add_index, :index
 
       # Gets the callback class for the given model class
       #

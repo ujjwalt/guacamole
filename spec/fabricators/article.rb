@@ -7,6 +7,7 @@ class Article
 
   attribute :title, String
   attribute :comments, Array[Comment]
+  attribute :unique_attribute, String
 
   validates :title, presence: true
 end
