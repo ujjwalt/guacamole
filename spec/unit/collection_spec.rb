@@ -645,6 +645,30 @@ describe Guacamole::Collection do
     end
   end
 
+  describe 'handle_client_error' do
+    let(:model)     { double('Model').as_null_object }
+
+    before { allow(model).to receive(:persisted?).and_return false }
+
+    it 'should add not raise the error if code was found' do
+      error = Ashikawa::Core::ClientError.new("
+        1210: cannot create document, unique constraint violated"
+      )
+      allow(subject).to receive(:create).with(model).and_raise error
+
+      expect { subject.save(model) }.not_to raise_error
+    end
+
+    it 'should add raise the error if code is not found' do
+      error = Ashikawa::Core::ClientError.new("
+        -1: cannot create document, unique constraint violated"
+      )
+      allow(subject).to receive(:create).with(model).and_raise error
+
+      expect { subject.save(model) }.to raise_error(error)
+    end
+  end
+
   describe 'callbacks' do
     let(:model) { double('Model') }
 
