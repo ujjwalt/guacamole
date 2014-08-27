@@ -651,8 +651,8 @@ describe Guacamole::Collection do
     before { allow(model).to receive(:persisted?).and_return false }
 
     it 'should add not raise the error if code was found' do
-      error = Ashikawa::Core::ClientError.new("
-        1210: cannot create document, unique constraint violated"
+      error = Ashikawa::Core::ClientError.new(
+        "1210: cannot create document, unique constraint violated"
       )
       allow(subject).to receive(:create).with(model).and_raise error
 
@@ -660,8 +660,8 @@ describe Guacamole::Collection do
     end
 
     it 'should add raise the error if code is not found' do
-      error = Ashikawa::Core::ClientError.new("
-        -1: cannot create document, unique constraint violated"
+      error = Ashikawa::Core::ClientError.new(
+        "-1: The error is that you can't handle this code"
       )
       allow(subject).to receive(:create).with(model).and_raise error
 
