@@ -121,17 +121,17 @@ describe 'CollectionBasics' do
         expect(subject.connection.indices.any? do
           |index| index.type == :hash && index.unique
         end).to eq true
-        # The following needs discussion
-        # ==============================
-        # new_index = subject.index :hash, on: :unique_attribute, unique: true
-        # index_id = new_index.id.split('/').last.to_i # Shouldn't this be simpler?
-        # expect(subject.connection.index(index_id)).to eq new_index
       end
 
       it 'does not allow two models with the same unique attribute' do
         first_document = Fabricate(:article)
         second_document = Fabricate(:article, unique_attribute: first_document.unique_attribute)
         expect(second_document.errors).to include(:index)
+      end
+
+      it 'should raise an exception if geo spatial index value is out of range' do
+        document = Fabricate(:article, location: "this is a string and not a location")
+        expect(document.errors).to include(:index)
       end
     end
   end
